@@ -35,6 +35,10 @@ public class AiConfiguration : BaseEntity
     public bool LogConversations { get; set; } = true;
     public bool EnableAnalytics { get; set; } = true;
 
+    // Pricing
+    public decimal InputCostPer1000Tokens { get; set; } = 0.0015m;
+    public decimal OutputCostPer1000Tokens { get; set; } = 0.002m;
+
     // Navigation properties
     public virtual Tenant Tenant { get; set; } = null!;
 } 

@@ -38,6 +38,15 @@ public class ApplicationDbContext : DbContext
         // Apply all entity configurations from the assembly
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
+        // Add soft delete global query filter
+        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+        {
+            if (typeof(BaseEntity).IsAssignableFrom(entityType.ClrType))
+            {
+                modelBuilder.Entity(entityType.ClrType).HasQueryFilter(p => !EF.Property<bool>(p, "IsDeleted"));
+            }
+        }
+
         // Apply global tenant filter for multi-tenancy (except for Tenant and TenantPlan entities)
         if (_tenantContext != null)
         {

@@ -4,6 +4,7 @@ using SmartAiChat.Application.Commands.ChatMessages;
 using SmartAiChat.Application.DTOs;
 using SmartAiChat.Domain.Entities;
 using SmartAiChat.Domain.Interfaces;
+using SmartAiChat.Infrastructure.Services;
 using SmartAiChat.Shared.Enums;
 using SmartAiChat.Shared.Models;
 
@@ -14,18 +15,18 @@ public class SendMessageHandler : IRequestHandler<SendMessageCommand, ApiRespons
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
     private readonly ITenantContext _tenantContext;
-    private readonly IAiService _aiService;
+    private readonly AiServiceFactory _aiServiceFactory;
 
     public SendMessageHandler(
-        IUnitOfWork unitOfWork, 
-        IMapper mapper, 
+        IUnitOfWork unitOfWork,
+        IMapper mapper,
         ITenantContext tenantContext,
-        IAiService aiService)
+        AiServiceFactory aiServiceFactory)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
         _tenantContext = tenantContext;
-        _aiService = aiService;
+        _aiServiceFactory = aiServiceFactory;
     }
 
     public async Task<ApiResponse<ChatMessageDto>> Handle(SendMessageCommand request, CancellationToken cancellationToken)
@@ -70,6 +71,8 @@ public class SendMessageHandler : IRequestHandler<SendMessageCommand, ApiRespons
 
                 if (aiConfig?.IsEnabled == true)
                 {
+                    var aiService = _aiServiceFactory.Create(aiConfig.Provider);
+
                     // Get conversation history
                     var recentMessages = await _unitOfWork.ChatMessages.FindAsync(
                         m => m.ChatSessionId == request.ChatSessionId,
@@ -81,7 +84,7 @@ public class SendMessageHandler : IRequestHandler<SendMessageCommand, ApiRespons
                         .ToList();
 
                     // Generate AI response
-                    var aiResponseContent = await _aiService.GenerateResponseAsync(
+                    var aiResponseContent = await aiService.GenerateResponseAsync(
                         request.Content, aiConfig, conversationHistory, cancellationToken);
 
                     // Create AI message

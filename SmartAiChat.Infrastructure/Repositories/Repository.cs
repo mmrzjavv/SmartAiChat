@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using SmartAiChat.Domain.Interfaces;
 using SmartAiChat.Persistence;
+using SmartAiChat.Infrastructure.Repositories.Search;
 using SmartAiChat.Shared;
 using SmartAiChat.Shared.Models;
 using System.Linq.Expressions;
@@ -63,8 +64,8 @@ public class Repository<T> : IRepository<T> where T : BaseEntity
         
         if (!string.IsNullOrEmpty(request.SearchTerm))
         {
-            // Add basic search functionality - this would need to be customized per entity
-            // For now, just return all results
+            var searchExpression = SearchExpressionBuilder.Build<T>(request.SearchTerm);
+            query = query.Where(searchExpression);
         }
         
         var totalCount = await query.CountAsync(cancellationToken);
@@ -102,7 +103,8 @@ public class Repository<T> : IRepository<T> where T : BaseEntity
         
         if (!string.IsNullOrEmpty(request.SearchTerm))
         {
-            // Add basic search functionality - this would need to be customized per entity
+            var searchExpression = SearchExpressionBuilder.Build<T>(request.SearchTerm);
+            query = query.Where(searchExpression);
         }
         
         var totalCount = await query.CountAsync(cancellationToken);

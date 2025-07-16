@@ -1,234 +1,216 @@
 using Microsoft.Extensions.Logging;
 using SmartAiChat.Domain.Entities;
 using SmartAiChat.Domain.Interfaces;
+using SmartAiChat.Infrastructure.Services.SentimentAnalysis;
+using SmartAiChat.Infrastructure.Services.Translation;
+using System.Net.Http;
 using System.Text;
 using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
+using Tiktoken;
 
-namespace SmartAiChat.Infrastructure.Services;
-
-public class OpenAiService : IAiService
+namespace SmartAiChat.Infrastructure.Services
 {
-    private readonly HttpClient _httpClient;
-    private readonly ILogger<OpenAiService> _logger;
-
-    public OpenAiService(HttpClient httpClient, ILogger<OpenAiService> logger)
+    public class OpenAiService : IAiService
     {
-        _httpClient = httpClient;
-        _logger = logger;
-    }
+        private readonly HttpClient _httpClient;
+        private readonly ILogger<OpenAiService> _logger;
+        private readonly SentimentAnalysisService _sentimentAnalysisService;
+        private readonly TranslationService _translationService;
 
-    public async Task<string> GenerateResponseAsync(string prompt, AiConfiguration configuration, List<ChatMessage>? conversationHistory = null, CancellationToken cancellationToken = default)
-    {
-        try
+        public OpenAiService(HttpClient httpClient, ILogger<OpenAiService> logger, SentimentAnalysisService sentimentAnalysisService, TranslationService translationService)
         {
-            if (!configuration.IsEnabled)
-            {
-                return configuration.FallbackMessage ?? "AI is currently disabled. Please contact support.";
-            }
-
-            // Build the conversation context
-            var messages = new List<object>();
-            
-            // Add system prompt
-            messages.Add(new { role = "system", content = configuration.SystemPrompt });
-
-            // Add conversation history if enabled
-            if (configuration.EnableContextHistory && conversationHistory != null)
-            {
-                var recentMessages = conversationHistory
-                    .OrderBy(m => m.CreatedAt)
-                    .TakeLast(configuration.ContextHistoryLimit)
-                    .ToList();
-
-                foreach (var msg in recentMessages)
-                {
-                    messages.Add(new 
-                    { 
-                        role = msg.IsFromAi ? "assistant" : "user", 
-                        content = msg.Content 
-                    });
-                }
-            }
-
-            // Add current prompt
-            messages.Add(new { role = "user", content = prompt });
-
-            // Prepare the request
-            var requestBody = new
-            {
-                model = configuration.ModelName,
-                messages = messages,
-                max_tokens = configuration.MaxTokens,
-                temperature = (float)configuration.Temperature
-            };
-
-            var json = JsonSerializer.Serialize(requestBody);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-            // Set authorization header
-            if (!string.IsNullOrEmpty(configuration.ApiKey))
-            {
-                _httpClient.DefaultRequestHeaders.Authorization = 
-                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", configuration.ApiKey);
-            }
-
-            // Make the API call
-            var endpoint = configuration.ApiEndpoint ?? "https://api.openai.com/v1/chat/completions";
-            var response = await _httpClient.PostAsync(endpoint, content, cancellationToken);
-
-            if (response.IsSuccessStatusCode)
-            {
-                var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
-                var openAiResponse = JsonSerializer.Deserialize<OpenAiChatResponse>(responseContent);
-                
-                var assistantMessage = openAiResponse?.Choices?.FirstOrDefault()?.Message?.Content ?? 
-                    configuration.FallbackMessage ?? "I'm sorry, I couldn't generate a response.";
-
-                // Check word limit
-                if (configuration.MaxWordLimit > 0)
-                {
-                    var words = assistantMessage.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-                    if (words.Length > configuration.MaxWordLimit)
-                    {
-                        assistantMessage = string.Join(" ", words.Take(configuration.MaxWordLimit)) + "...";
-                    }
-                }
-
-                return assistantMessage;
-            }
-            else
-            {
-                _logger.LogError("OpenAI API call failed with status: {StatusCode}", response.StatusCode);
-                return configuration.FallbackMessage ?? "I'm experiencing technical difficulties. Please try again later.";
-            }
+            _httpClient = httpClient;
+            _logger = logger;
+            _sentimentAnalysisService = sentimentAnalysisService;
+            _translationService = translationService;
         }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error calling OpenAI API");
-            return configuration.FallbackMessage ?? "I'm experiencing technical difficulties. Please try again later.";
-        }
-    }
 
-    public async Task<bool> ValidateApiKeyAsync(string apiKey, string provider, CancellationToken cancellationToken = default)
-    {
-        try
-        {
-            // Simple validation by making a minimal API call
-            _httpClient.DefaultRequestHeaders.Authorization = 
-                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", apiKey);
-
-            var response = await _httpClient.GetAsync("https://api.openai.com/v1/models", cancellationToken);
-            return response.IsSuccessStatusCode;
-        }
-        catch
-        {
-            return false;
-        }
-    }
-
-    public Task<decimal> CalculateCostAsync(string prompt, string response, AiConfiguration configuration, CancellationToken cancellationToken = default)
-    {
-        // Simplified cost calculation - would need actual token counting and pricing
-        var promptTokens = prompt.Length / 4; // Rough approximation
-        var responseTokens = response.Length / 4;
-        var totalTokens = promptTokens + responseTokens;
-        
-        // Basic pricing (this would be configurable)
-        var costPer1000Tokens = 0.002m; // Example for GPT-3.5-turbo
-        var cost = (totalTokens / 1000m) * costPer1000Tokens;
-        
-        return Task.FromResult(cost);
-    }
-
-    public Task<bool> ShouldHandoffToOperatorAsync(string message, AiConfiguration configuration, CancellationToken cancellationToken = default)
-    {
-        if (!configuration.EnableHandoffToOperator)
-            return Task.FromResult(false);
-
-        // Check for handoff trigger keywords
-        if (!string.IsNullOrEmpty(configuration.HandoffTriggerKeywords))
+        public async Task<string> GenerateResponseAsync(string prompt, AiConfiguration configuration, List<ChatMessage>? conversationHistory = null, CancellationToken cancellationToken = default)
         {
             try
             {
-                var keywords = JsonSerializer.Deserialize<List<string>>(configuration.HandoffTriggerKeywords) ?? new List<string>();
-                var lowerMessage = message.ToLowerInvariant();
-                
-                foreach (var keyword in keywords)
+                if (!configuration.IsEnabled)
                 {
-                    if (lowerMessage.Contains(keyword.ToLowerInvariant()))
+                    return configuration.FallbackMessage ?? "AI is currently disabled. Please contact support.";
+                }
+
+                var messages = new List<object>
+                {
+                    new { role = "system", content = configuration.SystemPrompt }
+                };
+
+                if (configuration.EnableContextHistory && conversationHistory != null)
+                {
+                    var recentMessages = conversationHistory
+                        .OrderBy(m => m.CreatedAt)
+                        .TakeLast(configuration.ContextHistoryLimit)
+                        .ToList();
+
+                    foreach (var msg in recentMessages)
                     {
-                        return Task.FromResult(true);
+                        messages.Add(new { role = msg.IsFromAi ? "assistant" : "user", content = msg.Content });
                     }
                 }
+
+                messages.Add(new { role = "user", content = prompt });
+
+                var requestBody = new
+                {
+                    model = configuration.ModelName,
+                    messages = messages,
+                    max_tokens = configuration.MaxTokens,
+                    temperature = (float)configuration.Temperature
+                };
+
+                var json = JsonSerializer.Serialize(requestBody);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                if (!string.IsNullOrEmpty(configuration.ApiKey))
+                {
+                    _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", configuration.ApiKey);
+                }
+
+                var endpoint = configuration.ApiEndpoint ?? "https://api.openai.com/v1/chat/completions";
+                var response = await _httpClient.PostAsync(endpoint, content, cancellationToken);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+                    var openAiResponse = JsonSerializer.Deserialize<OpenAiChatResponse>(responseContent);
+
+                    var assistantMessage = openAiResponse?.Choices?.FirstOrDefault()?.Message?.Content ??
+                        configuration.FallbackMessage ?? "I'm sorry, I couldn't generate a response.";
+
+                    if (configuration.MaxWordLimit > 0)
+                    {
+                        var words = assistantMessage.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                        if (words.Length > configuration.MaxWordLimit)
+                        {
+                            assistantMessage = string.Join(" ", words.Take(configuration.MaxWordLimit)) + "...";
+                        }
+                    }
+
+                    return assistantMessage;
+                }
+                else
+                {
+                    _logger.LogError("OpenAI API call failed with status: {StatusCode}", response.StatusCode);
+                    return configuration.FallbackMessage ?? "I'm experiencing technical difficulties. Please try again later.";
+                }
             }
-            catch (JsonException)
+            catch (HttpRequestException ex)
             {
-                // Invalid JSON in keywords, skip
+                _logger.LogError(ex, "Error calling OpenAI API: Network error.");
+                return "I'm sorry, but I'm having trouble connecting to the AI service. Please check your network connection and try again.";
+            }
+            catch (JsonException ex)
+            {
+                _logger.LogError(ex, "Error calling OpenAI API: Invalid response format.");
+                return "I'm sorry, but I received an invalid response from the AI service. Please try again later.";
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An unexpected error occurred while calling the OpenAI API.");
+                return configuration.FallbackMessage ?? "I'm experiencing technical difficulties. Please try again later.";
             }
         }
 
-        return Task.FromResult(false);
-    }
-
-    public Task<List<FaqEntry>> SuggestFaqsAsync(string message, List<FaqEntry> faqs, CancellationToken cancellationToken = default)
-    {
-        // Simple keyword-based FAQ matching
-        var lowerMessage = message.ToLowerInvariant();
-        var suggestions = new List<FaqEntry>();
-
-        foreach (var faq in faqs.Where(f => f.IsActive && f.EnableAutoSuggestion))
+        public async Task<bool> ValidateApiKeyAsync(string apiKey, string provider, CancellationToken cancellationToken = default)
         {
-            var questionWords = faq.Question.ToLowerInvariant().Split(' ', StringSplitOptions.RemoveEmptyEntries);
-            var matchCount = questionWords.Count(word => lowerMessage.Contains(word));
-            
-            if (matchCount > 0)
+            try
             {
-                suggestions.Add(faq);
+                _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", apiKey);
+                var response = await _httpClient.GetAsync("https://api.openai.com/v1/models", cancellationToken);
+                return response.IsSuccessStatusCode;
+            }
+            catch
+            {
+                return false;
             }
         }
 
-        return Task.FromResult(suggestions.Take(3).ToList()); // Return top 3 suggestions
+        public Task<decimal> CalculateCostAsync(string prompt, string response, AiConfiguration configuration, CancellationToken cancellationToken = default)
+        {
+            var encoding = Tiktoken.Encoding.ForModel(configuration.ModelName);
+            var promptTokens = encoding.Encode(prompt).Count;
+            var responseTokens = encoding.Encode(response).Count;
+            var inputCost = (promptTokens / 1000m) * configuration.InputCostPer1000Tokens;
+            var outputCost = (responseTokens / 1000m) * configuration.OutputCostPer1000Tokens;
+            var totalCost = inputCost + outputCost;
+            return Task.FromResult(totalCost);
+        }
+
+        public Task<bool> ShouldHandoffToOperatorAsync(string message, AiConfiguration configuration, CancellationToken cancellationToken = default)
+        {
+            if (!configuration.EnableHandoffToOperator)
+                return Task.FromResult(false);
+
+            if (!string.IsNullOrEmpty(configuration.HandoffTriggerKeywords))
+            {
+                try
+                {
+                    var keywords = JsonSerializer.Deserialize<List<string>>(configuration.HandoffTriggerKeywords) ?? new List<string>();
+                    var lowerMessage = message.ToLowerInvariant();
+                    foreach (var keyword in keywords)
+                    {
+                        if (lowerMessage.Contains(keyword.ToLowerInvariant()))
+                        {
+                            return Task.FromResult(true);
+                        }
+                    }
+                }
+                catch (JsonException)
+                {
+                }
+            }
+
+            return Task.FromResult(false);
+        }
+
+        public Task<List<FaqEntry>> SuggestFaqsAsync(string message, List<FaqEntry> faqs, CancellationToken cancellationToken = default)
+        {
+            var lowerMessage = message.ToLowerInvariant();
+            var suggestions = new List<FaqEntry>();
+
+            foreach (var faq in faqs.Where(f => f.IsActive && f.EnableAutoSuggestion))
+            {
+                var questionWords = faq.Question.ToLowerInvariant().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                var matchCount = questionWords.Count(word => lowerMessage.Contains(word));
+                if (matchCount > 0)
+                {
+                    suggestions.Add(faq);
+                }
+            }
+
+            return Task.FromResult(suggestions.Take(3).ToList());
+        }
+
+        public Task<string> ExtractSentimentAsync(string message, CancellationToken cancellationToken = default)
+        {
+            var sentiment = _sentimentAnalysisService.AnalyzeSentiment(message);
+            return Task.FromResult(sentiment);
+        }
+
+        public async Task<string> TranslateMessageAsync(string message, string fromLanguage, string toLanguage, CancellationToken cancellationToken = default)
+        {
+            return await _translationService.TranslateAsync(message, fromLanguage, toLanguage);
+        }
     }
 
-    public Task<string> ExtractSentimentAsync(string message, CancellationToken cancellationToken = default)
+    public class OpenAiChatResponse
     {
-        // Simplified sentiment analysis - in production, this would use a proper service
-        var lowerMessage = message.ToLowerInvariant();
-        
-        var positiveWords = new[] { "good", "great", "excellent", "happy", "satisfied", "thank", "awesome", "wonderful" };
-        var negativeWords = new[] { "bad", "terrible", "awful", "angry", "frustrated", "disappointed", "hate", "horrible" };
-        
-        var positiveCount = positiveWords.Count(word => lowerMessage.Contains(word));
-        var negativeCount = negativeWords.Count(word => lowerMessage.Contains(word));
-        
-        if (positiveCount > negativeCount)
-            return Task.FromResult("positive");
-        else if (negativeCount > positiveCount)
-            return Task.FromResult("negative");
-        else
-            return Task.FromResult("neutral");
+        public List<OpenAiChoice>? Choices { get; set; }
     }
 
-    public Task<string> TranslateMessageAsync(string message, string fromLanguage, string toLanguage, CancellationToken cancellationToken = default)
+    public class OpenAiChoice
     {
-        // Placeholder for translation service integration
-        // In production, this would integrate with a translation service
-        return Task.FromResult(message);
+        public OpenAiMessage? Message { get; set; }
+    }
+
+    public class OpenAiMessage
+    {
+        public string? Content { get; set; }
     }
 }
-
-// OpenAI API response models
-public class OpenAiChatResponse
-{
-    public List<OpenAiChoice>? Choices { get; set; }
-}
-
-public class OpenAiChoice
-{
-    public OpenAiMessage? Message { get; set; }
-}
-
-public class OpenAiMessage
-{
-    public string? Content { get; set; }
-} 

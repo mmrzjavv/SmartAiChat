@@ -23,6 +23,8 @@ public class AiConfigurationDto
     public bool EnableFaqSuggestions { get; set; }
     public bool EnableTypingIndicator { get; set; }
     public int TypingIndicatorDelay { get; set; }
+    public decimal InputCostPer1000Tokens { get; set; }
+    public decimal OutputCostPer1000Tokens { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
 } 

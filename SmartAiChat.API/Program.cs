@@ -2,6 +2,7 @@ using Carter;
 using Serilog;
 using SmartAiChat.API.Extensions;
 using SmartAiChat.API.Hubs;
+using SmartAiChat.API.Middleware;
 using SmartAiChat.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,8 +24,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddSwaggerDocumentation();
-builder.Services.AddCorsConfiguration();
+builder.Services.AddCorsConfiguration(builder.Configuration);
 builder.Services.AddApplicationHealthChecks(builder.Configuration);
+builder.Services.AddRateLimiting();
 
 // Add Carter
 builder.Services.AddCarter();
@@ -41,13 +43,16 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
+app.UseMiddleware<SecureHeadersMiddleware>();
 app.UseHttpsRedirection();
 app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseRateLimiter();
 
 // Map Carter modules
-app.MapCarter();
+app.MapCarter().RequireRateLimiting("fixed");
 
 // Map SignalR hub
 app.MapHub<ChatHub>("/chatHub");

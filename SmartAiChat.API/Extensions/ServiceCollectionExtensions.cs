@@ -1,13 +1,18 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Threading.RateLimiting;
 using SmartAiChat.Application.Mappings;
 using SmartAiChat.Application.Validators;
 using SmartAiChat.Domain.Interfaces;
 using SmartAiChat.Infrastructure.Repositories;
 using SmartAiChat.Infrastructure.Services;
+using SmartAiChat.Infrastructure.Services.SentimentAnalysis;
+using SmartAiChat.Infrastructure.Services.Translation;
 using SmartAiChat.Persistence;
 using SmartAiChat.Shared.Constants;
 using System.Reflection;
@@ -36,8 +41,12 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ITenantContext, TenantContextService>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-        services.AddHttpClient<IAiService, OpenAiService>();
+        services.AddHttpClient("OpenAI");
+        services.AddSingleton<AiServiceFactory>();
         services.AddScoped<IJwtTokenService, JwtTokenService>();
+        services.AddSingleton<SentimentAnalysisService>();
+        services.AddSingleton<TranslationService>();
+        services.AddSingleton<IFileProcessingService, FileProcessingService>();
 
         return services;
     }
@@ -145,15 +154,41 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    public static IServiceCollection AddCorsConfiguration(this IServiceCollection services)
+    public static IServiceCollection AddCorsConfiguration(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddCors(options =>
         {
             options.AddDefaultPolicy(builder =>
             {
-                builder.AllowAnyOrigin()
-                       .AllowAnyMethod()
-                       .AllowAnyHeader();
+                var allowedOrigins = configuration.GetSection("Cors:AllowedOrigins").Get<string[]>();
+                if (allowedOrigins != null && allowedOrigins.Length > 0)
+                {
+                    builder.WithOrigins(allowedOrigins)
+                           .AllowAnyHeader()
+                           .AllowAnyMethod();
+                }
+                else
+                {
+                    builder.AllowAnyOrigin()
+                           .AllowAnyMethod()
+                           .AllowAnyHeader();
+                }
+            });
+        });
+
+        return services;
+    }
+
+    public static IServiceCollection AddRateLimiting(this IServiceCollection services)
+    {
+        services.AddRateLimiter(options =>
+        {
+            options.AddFixedWindowLimiter("fixed", opt =>
+            {
+                opt.PermitLimit = 100;
+                opt.Window = TimeSpan.FromMinutes(1);
+                opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+                opt.QueueLimit = 10;
             });
         });
 
