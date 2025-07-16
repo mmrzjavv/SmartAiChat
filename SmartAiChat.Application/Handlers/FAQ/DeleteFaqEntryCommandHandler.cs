@@ -27,7 +27,7 @@ namespace SmartAiChat.Application.Handlers.FAQ
                 throw new Exception("FAQ Entry not found.");
             }
 
-            _unitOfWork.FaqEntries.Remove(faqEntry);
+            await _unitOfWork.FaqEntries.DeleteAsync(faqEntry, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Unit.Value;

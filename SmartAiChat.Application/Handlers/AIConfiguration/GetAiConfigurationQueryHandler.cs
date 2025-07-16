@@ -6,7 +6,7 @@ using SmartAiChat.Domain.Interfaces;
 
 namespace SmartAiChat.Application.Handlers.AIConfiguration
 {
-    public class GetAiConfigurationQueryHandler : IRequestHandler<GetAIConfigurationQuery, AiConfigurationDto>
+    public class GetAiConfigurationQueryHandler : IRequestHandler<GetAIConfigurationQuery, AiConfigurationDto?>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -19,7 +19,7 @@ namespace SmartAiChat.Application.Handlers.AIConfiguration
             _tenantContext = tenantContext;
         }
 
-        public async Task<AiConfigurationDto> Handle(GetAIConfigurationQuery request, CancellationToken cancellationToken)
+        public async Task<AiConfigurationDto?> Handle(GetAIConfigurationQuery request, CancellationToken cancellationToken)
         {
             var tenantId = _tenantContext.TenantId;
             var aiConfiguration = await _unitOfWork.AiConfigurations.FirstOrDefaultAsync(

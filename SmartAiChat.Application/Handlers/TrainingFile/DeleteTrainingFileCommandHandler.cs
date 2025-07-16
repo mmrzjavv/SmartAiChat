@@ -32,7 +32,7 @@ namespace SmartAiChat.Application.Handlers.TrainingFile
             // TODO: Implement file deletion from MinIO
             // await _fileProcessingService.DeleteFileAsync(trainingFile.FilePath);
 
-            _unitOfWork.AiTrainingFiles.Remove(trainingFile);
+            await _unitOfWork.AiTrainingFiles.DeleteAsync(trainingFile, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Unit.Value;
