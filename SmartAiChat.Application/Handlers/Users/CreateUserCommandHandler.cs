@@ -27,7 +27,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, UserD
             Email = request.Email,
             PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
             Role = request.Role,
-            TenantId = _unitOfWork.TenantContext.GetTenantId()
+            TenantId = request.TenantId
         };
 
         await _unitOfWork.Repository<User>().AddAsync(user);
