@@ -1,0 +1,45 @@
+﻿# Default ignored files
+/shelf/
+/workspace.xml
+
+# Rider ignored files
+/.idea.SmartAiChat.iml
+/projectSettingsUpdater.xml
+/contentModel.xml
+/modules.xml
+
+# Editor-based HTTP Client requests
+/httpRequests/
+
+# Datasource local storage ignored files
+/dataSources/
+/dataSources.local.xml
+
+# Ignore build and output directories
+/bin/
+/obj/
+
+# Dependency injection and DLL files
+*.dll
+
+# Ignore AutoMapper and Azure related files
+AutoMapper.dll
+AutoMapper.Extensions.Microsoft.DependencyInjection.dll
+Azure.Core.dll
+Azure.Identity.dll
+
+# Ignore all Debug directories from tests
+**/Debug/
+/Debug/
+
+# Ignore specific test and external libraries
+Bcrypt.Net-Next.dll
+Carter.Analyzers.dll
+Carter.dll
+Castle.Core.dll
+
+# Ignore project configuration and cache files
+**/project.assets.json
+**/project.nuget.cache
+**/project.packagespec.json
+**/obj/
