@@ -1,7 +1,10 @@
 using Carter;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using SmartAiChat.Application.Commands.Tenants;
+using SmartAiChat.Application.Queries.Tenants;
 using SmartAiChat.Shared.Constants;
+using SmartAiChat.Shared.Models;
 
 namespace SmartAiChat.API.Modules;
 
@@ -26,6 +29,23 @@ public class AdminModule : ICarterModule
             .WithSummary("Get tenant by ID")
             .WithDescription("Retrieves a specific tenant");
 
+        group.MapPost("/tenants", CreateTenant)
+            .WithName("CreateTenant")
+            .WithSummary("Create a new tenant")
+            .WithDescription("Creates a new tenant (SuperAdmin only)")
+            .RequireAuthorization(SystemConstants.Policies.SuperAdminOnly);
+
+        group.MapPut("/tenants/{id:guid}", UpdateTenant)
+            .WithName("UpdateTenant")
+            .WithSummary("Update a tenant")
+            .WithDescription("Updates an existing tenant");
+
+        group.MapDelete("/tenants/{id:guid}", DeleteTenant)
+            .WithName("DeleteTenant")
+            .WithSummary("Delete a tenant")
+            .WithDescription("Deletes a tenant (SuperAdmin only)")
+            .RequireAuthorization(SystemConstants.Policies.SuperAdminOnly);
+
         // AI Configuration endpoints
         group.MapGet("/ai-configuration", GetAiConfiguration)
             .WithName("GetAiConfiguration")
@@ -45,16 +65,41 @@ public class AdminModule : ICarterModule
             .WithDescription("Retrieves AI training files for the current tenant");
     }
 
-    private static IResult GetTenants()
+    private static async Task<IResult> GetTenants([AsParameters] PaginationRequest request, ISender sender)
     {
-        // Placeholder - would implement with proper handler
-        return Results.Ok(new { message = "Get tenants endpoint - to be implemented" });
+        var query = new GetAllTenantsQuery { Pagination = request };
+        var result = await sender.Send(query);
+        return Results.Ok(result);
     }
 
-    private static IResult GetTenant(Guid id)
+    private static async Task<IResult> GetTenant(Guid id, ISender sender)
     {
-        // Placeholder - would implement with proper handler
-        return Results.Ok(new { message = $"Get tenant {id} endpoint - to be implemented" });
+        var query = new GetTenantByIdQuery { Id = id };
+        var result = await sender.Send(query);
+        return result is not null ? Results.Ok(result) : Results.NotFound();
+    }
+
+    private static async Task<IResult> CreateTenant(CreateTenantCommand command, ISender sender)
+    {
+        var result = await sender.Send(command);
+        return Results.Created($"/api/v1/admin/tenants/{result.Id}", result);
+    }
+
+    private static async Task<IResult> UpdateTenant(Guid id, UpdateTenantCommand command, ISender sender)
+    {
+        if (id != command.Id)
+        {
+            return Results.BadRequest("ID mismatch");
+        }
+        var result = await sender.Send(command);
+        return result is not null ? Results.Ok(result) : Results.NotFound();
+    }
+
+    private static async Task<IResult> DeleteTenant(Guid id, ISender sender)
+    {
+        var command = new DeleteTenantCommand { Id = id };
+        await sender.Send(command);
+        return Results.NoContent();
     }
 
     private static IResult GetAiConfiguration()

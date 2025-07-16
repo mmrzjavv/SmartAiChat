@@ -1,4 +1,5 @@
 using AutoMapper;
+using SmartAiChat.Application.Commands.Tenants;
 using SmartAiChat.Application.DTOs;
 using SmartAiChat.Domain.Entities;
 using System.Text.Json;
@@ -10,6 +11,8 @@ public class AutoMapperProfile : Profile
     public AutoMapperProfile()
     {
         CreateMap<Tenant, TenantDto>();
+        CreateMap<CreateTenantCommand, Tenant>();
+        CreateMap<UpdateTenantCommand, Tenant>();
         CreateMap<User, UserDto>();
         CreateMap<ChatSession, ChatSessionDto>()
             .AfterMap((src, dest) => 
