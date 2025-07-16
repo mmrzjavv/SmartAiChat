@@ -46,7 +46,7 @@ namespace SmartAiChat.Application.Handlers.TrainingFile
                 Tags = request.Tags != null ? JsonSerializer.Serialize(request.Tags) : null
             };
 
-            _unitOfWork.AiTrainingFiles.Add<AiTrainingFile>(trainingFile);
+            await _unitOfWork.AiTrainingFiles.AddAsync(trainingFile, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return _mapper.Map<AiTrainingFileDto>(trainingFile);
