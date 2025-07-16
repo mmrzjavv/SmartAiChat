@@ -2,7 +2,9 @@ using Carter;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SmartAiChat.Application.Commands.Tenants;
+using SmartAiChat.Application.Commands.Users;
 using SmartAiChat.Application.Queries.Tenants;
+using SmartAiChat.Application.Queries.Users;
 using SmartAiChat.Shared.Constants;
 using SmartAiChat.Shared.Models;
 
@@ -16,6 +18,32 @@ public class AdminModule : ICarterModule
             .WithTags("Admin")
             .WithOpenApi()
             .RequireAuthorization(SystemConstants.Policies.TenantAdminOrAbove);
+
+        // User management endpoints
+        group.MapGet("/users", GetUsers)
+            .WithName("GetUsers")
+            .WithSummary("Get all users")
+            .WithDescription("Retrieves all users for the current tenant");
+
+        group.MapGet("/users/{id:guid}", GetUser)
+            .WithName("GetUser")
+            .WithSummary("Get user by ID")
+            .WithDescription("Retrieves a specific user");
+
+        group.MapPost("/users", CreateUser)
+            .WithName("CreateUser")
+            .WithSummary("Create a new user")
+            .WithDescription("Creates a new user for the current tenant");
+
+        group.MapPut("/users/{id:guid}", UpdateUser)
+            .WithName("UpdateUser")
+            .WithSummary("Update a user")
+            .WithDescription("Updates an existing user");
+
+        group.MapDelete("/users/{id:guid}", DeleteUser)
+            .WithName("DeleteUser")
+            .WithSummary("Delete a user")
+            .WithDescription("Deletes a user");
 
         // Tenant management endpoints
         group.MapGet("/tenants", GetTenants)
@@ -35,16 +63,6 @@ public class AdminModule : ICarterModule
             .WithDescription("Creates a new tenant (SuperAdmin only)")
             .RequireAuthorization(SystemConstants.Policies.SuperAdminOnly);
 
-        group.MapPut("/tenants/{id:guid}", UpdateTenant)
-            .WithName("UpdateTenant")
-            .WithSummary("Update a tenant")
-            .WithDescription("Updates an existing tenant");
-
-        group.MapDelete("/tenants/{id:guid}", DeleteTenant)
-            .WithName("DeleteTenant")
-            .WithSummary("Delete a tenant")
-            .WithDescription("Deletes a tenant (SuperAdmin only)")
-            .RequireAuthorization(SystemConstants.Policies.SuperAdminOnly);
 
         // AI Configuration endpoints
         group.MapGet("/ai-configuration", GetAiConfiguration)
@@ -118,5 +136,48 @@ public class AdminModule : ICarterModule
     {
         // Placeholder - would implement with proper handler
         return Results.Ok(new { message = "Get training files endpoint - to be implemented" });
+    }
+
+    private static async Task<IResult> GetUsers([AsParameters] PaginationRequest request, ISender sender)
+    {
+        var query = new GetAllUsersQuery { Pagination = request };
+        var result = await sender.Send(query);
+        return Results.Ok(result);
+    }
+
+    private static async Task<IResult> GetUser(Guid id, ISender sender)
+    {
+        var query = new GetUserByIdQuery { Id = id };
+        var result = await sender.Send(query);
+        return result is not null ? Results.Ok(result) : Results.NotFound();
+    }
+
+    private static async Task<IResult> CreateUser(CreateUserCommand command, ISender sender, HttpContext httpContext)
+    {
+        var tenantId = httpContext.User.Claims.FirstOrDefault(c => c.Type == "TenantId")?.Value;
+        if (tenantId == null)
+        {
+            return Results.BadRequest("TenantId not found in token.");
+        }
+        command.TenantId = Guid.Parse(tenantId);
+        var result = await sender.Send(command);
+        return Results.Created($"/api/v1/admin/users/{result.Id}", result);
+    }
+
+    private static async Task<IResult> UpdateUser(Guid id, UpdateUserCommand command, ISender sender)
+    {
+        if (id != command.Id)
+        {
+            return Results.BadRequest("ID mismatch");
+        }
+        var result = await sender.Send(command);
+        return result is not null ? Results.Ok(result) : Results.NotFound();
+    }
+
+    private static async Task<IResult> DeleteUser(Guid id, ISender sender)
+    {
+        var command = new DeleteUserCommand { Id = id };
+        await sender.Send(command);
+        return Results.NoContent();
     }
 } 
