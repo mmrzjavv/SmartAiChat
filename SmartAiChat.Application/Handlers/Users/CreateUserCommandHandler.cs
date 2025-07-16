@@ -30,8 +30,8 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, UserD
             TenantId = request.TenantId
         };
 
-        await _unitOfWork.Repository<User>().AddAsync(user);
-        await _unitOfWork.CompleteAsync();
+        await _unitOfWork.Users.AddAsync(user, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return _mapper.Map<UserDto>(user);
     }

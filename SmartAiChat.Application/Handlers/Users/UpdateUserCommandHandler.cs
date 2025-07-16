@@ -21,7 +21,7 @@ public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, UserD
 
     public async Task<UserDto> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
     {
-        var user = await _unitOfWork.Repository<User>().GetByIdAsync(request.Id);
+        var user = await _unitOfWork.Users.GetByIdAsync(request.Id, cancellationToken);
 
         if (user == null)
         {
@@ -34,8 +34,8 @@ public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, UserD
         user.Role = request.Role;
         user.IsActive = request.IsActive;
 
-        await _unitOfWork.Repository<User>().UpdateAsync(user);
-        await _unitOfWork.CompleteAsync();
+        await _unitOfWork.Users.UpdateAsync(user, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return _mapper.Map<UserDto>(user);
     }
