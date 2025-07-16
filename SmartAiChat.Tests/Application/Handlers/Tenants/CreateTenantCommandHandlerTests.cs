@@ -1,12 +1,10 @@
 using AutoMapper;
 using Moq;
 using SmartAiChat.Application.Commands.Tenants;
-using SmartAiChat.Application.DTOs;
 using SmartAiChat.Application.Handlers.Tenants;
 using SmartAiChat.Application.Mappings;
 using SmartAiChat.Domain.Entities;
 using SmartAiChat.Domain.Interfaces;
-using Xunit;
 
 namespace SmartAiChat.Tests.Application.Handlers.Tenants;
 

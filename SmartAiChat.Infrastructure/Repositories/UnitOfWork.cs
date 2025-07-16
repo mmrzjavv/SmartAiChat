@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore.Storage;
 using SmartAiChat.Domain.Entities;
 using SmartAiChat.Domain.Interfaces;
-using SmartAiChat.Infrastructure.Repositories;
 using SmartAiChat.Persistence;
 
 namespace SmartAiChat.Infrastructure.Repositories;

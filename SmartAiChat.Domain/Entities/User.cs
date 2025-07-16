@@ -26,6 +26,6 @@ public class User : BaseEntity
     // Navigation properties
     public virtual Tenant Tenant { get; set; } = null!;
     public virtual ICollection<ChatSession> ChatSessions { get; set; } = new List<ChatSession>();
-    public virtual ICollection<ChatMessage> ChatMessages { get; set; } = new List<ChatMessage>();
+    // public virtual ICollection<ChatMessage> ChatMessages { get; set; } = new List<ChatMessage>();
     public virtual ICollection<OperatorActivity> OperatorActivities { get; set; } = new List<OperatorActivity>();
-} 
+}

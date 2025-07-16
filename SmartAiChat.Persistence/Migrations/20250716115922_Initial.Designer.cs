@@ -12,8 +12,8 @@ using SmartAiChat.Persistence;
 namespace SmartAiChat.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250714123626_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250716115922_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -100,6 +100,9 @@ namespace SmartAiChat.Persistence.Migrations
                     b.Property<string>("HandoffTriggerKeywords")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<decimal>("InputCostPer1000Tokens")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -134,6 +137,9 @@ namespace SmartAiChat.Persistence.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
                         .HasDefaultValue("gpt-3.5-turbo");
+
+                    b.Property<decimal>("OutputCostPer1000Tokens")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Provider")
                         .IsRequired()
@@ -273,9 +279,6 @@ namespace SmartAiChat.Persistence.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("UploadedById")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid>("UploadedByUserId")
                         .HasColumnType("uniqueidentifier");
 
@@ -286,9 +289,9 @@ namespace SmartAiChat.Persistence.Migrations
 
                     b.HasIndex("TenantId");
 
-                    b.HasIndex("UploadedById");
+                    b.HasIndex("UploadedByUserId");
 
-                    b.ToTable("AiTrainingFiles");
+                    b.ToTable("AiTrainingFiles", (string)null);
                 });
 
             modelBuilder.Entity("SmartAiChat.Domain.Entities.ChatMessage", b =>
@@ -1121,13 +1124,13 @@ namespace SmartAiChat.Persistence.Migrations
                     b.HasOne("SmartAiChat.Domain.Entities.Tenant", "Tenant")
                         .WithMany("AiTrainingFiles")
                         .HasForeignKey("TenantId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("SmartAiChat.Domain.Entities.User", "UploadedBy")
                         .WithMany()
-                        .HasForeignKey("UploadedById")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("UploadedByUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Tenant");
@@ -1149,16 +1152,9 @@ namespace SmartAiChat.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SmartAiChat.Domain.Entities.User", "User")
-                        .WithMany("ChatMessages")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
                     b.Navigation("ChatSession");
 
                     b.Navigation("Tenant");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("SmartAiChat.Domain.Entities.ChatSession", b =>
@@ -1172,12 +1168,12 @@ namespace SmartAiChat.Persistence.Migrations
                     b.HasOne("SmartAiChat.Domain.Entities.User", "Operator")
                         .WithMany()
                         .HasForeignKey("OperatorId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("SmartAiChat.Domain.Entities.Tenant", "Tenant")
                         .WithMany("ChatSessions")
                         .HasForeignKey("TenantId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Customer");
@@ -1196,7 +1192,7 @@ namespace SmartAiChat.Persistence.Migrations
                     b.HasOne("SmartAiChat.Domain.Entities.Tenant", "Tenant")
                         .WithMany("FaqEntries")
                         .HasForeignKey("TenantId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("SmartAiChat.Domain.Entities.User", "UpdatedBy")
@@ -1221,7 +1217,7 @@ namespace SmartAiChat.Persistence.Migrations
                     b.HasOne("SmartAiChat.Domain.Entities.User", "Operator")
                         .WithMany("OperatorActivities")
                         .HasForeignKey("OperatorId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("SmartAiChat.Domain.Entities.Tenant", "Tenant")
@@ -1296,8 +1292,6 @@ namespace SmartAiChat.Persistence.Migrations
 
             modelBuilder.Entity("SmartAiChat.Domain.Entities.User", b =>
                 {
-                    b.Navigation("ChatMessages");
-
                     b.Navigation("ChatSessions");
 
                     b.Navigation("OperatorActivities");

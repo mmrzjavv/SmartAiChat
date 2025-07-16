@@ -1,5 +1,3 @@
-using System;
-
 namespace SmartAiChat.Application.Exceptions;
 
 public class NotFoundException : Exception

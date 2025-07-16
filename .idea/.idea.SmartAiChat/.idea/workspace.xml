@@ -11,39 +11,78 @@
   <component name="ChangeListManager">
     <list default="true" id="eb93e87e-bcec-4710-b1f0-8cefb458c5e9" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.SmartAiChat/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.SmartAiChat/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.API/Controllers/ChatController.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.API/Controllers/FaqController.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.API/Controllers/TenantController.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.API/Controllers/UserController.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.API/Extensions/ServiceCollectionExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.API/Extensions/ServiceCollectionExtensions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.API/Hubs/ChatHub.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.API/Hubs/ChatHub.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.API/Middleware/GlobalExceptionHandlerMiddleware.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.API/Middleware/GlobalExceptionHandlerMiddleware.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.API/Middleware/SecureHeadersMiddleware.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.API/Middleware/SecureHeadersMiddleware.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SmartAiChat.API/Modules/AdminModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.API/Modules/AdminModule.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartAiChat.Application/Commands/AIConfiguration/UpdateAiConfigurationCommand.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Application/Commands/AIConfiguration/UpdateAiConfigurationCommand.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartAiChat.Application/Commands/FAQ/DeleteFaqEntryCommand.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Application/Commands/FAQ/DeleteFaqEntryCommand.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartAiChat.Application/Commands/TrainingFile/DeleteTrainingFileCommand.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Application/Commands/TrainingFile/DeleteTrainingFileCommand.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartAiChat.Application/Commands/Users/CreateUserCommand.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Application/Commands/Users/CreateUserCommand.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartAiChat.Application/Commands/Users/DeleteUserCommand.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Application/Commands/Users/DeleteUserCommand.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartAiChat.Application/Handlers/AIConfiguration/GetAiConfigurationQueryHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Application/Handlers/AIConfiguration/GetAiConfigurationQueryHandler.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartAiChat.Application/Handlers/AIConfiguration/UpdateAiConfigurationCommandHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Application/Handlers/AIConfiguration/UpdateAiConfigurationCommandHandler.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartAiChat.Application/Handlers/ChatMessages/SendMessageHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Application/Handlers/ChatMessages/SendMessageHandler.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.API/Modules/AuthModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.API/Modules/AuthModule.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.API/Modules/ChatModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.API/Modules/ChatModule.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.API/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.API/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.API/appsettings.Development.json" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.API/appsettings.Development.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.API/logs/smartaichat-20250716.log" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.API/logs/smartaichat-20250716.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.Application/DTOs/TenantDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Application/DTOs/TenantDto.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.Application/Exceptions/NotFoundException.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Application/Exceptions/NotFoundException.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.Application/Handlers/Authentication/LoginHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Application/Handlers/Authentication/LoginHandler.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.Application/Handlers/Authentication/RegisterHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Application/Handlers/Authentication/RegisterHandler.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SmartAiChat.Application/Handlers/FAQ/CreateFaqEntryCommandHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Application/Handlers/FAQ/CreateFaqEntryCommandHandler.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartAiChat.Application/Handlers/FAQ/DeleteFaqEntryCommandHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Application/Handlers/FAQ/DeleteFaqEntryCommandHandler.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SmartAiChat.Application/Handlers/FAQ/GetAllFaqEntriesQueryHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Application/Handlers/FAQ/GetAllFaqEntriesQueryHandler.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartAiChat.Application/Handlers/FAQ/GetFaqEntryByIdQueryHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Application/Handlers/FAQ/GetFaqEntryByIdQueryHandler.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SmartAiChat.Application/Handlers/FAQ/UpdateFaqEntryCommandHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Application/Handlers/FAQ/UpdateFaqEntryCommandHandler.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.Application/Handlers/Tenants/DeleteTenantCommandHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Application/Handlers/Tenants/DeleteTenantCommandHandler.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SmartAiChat.Application/Handlers/Tenants/GetAllTenantsQueryHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Application/Handlers/Tenants/GetAllTenantsQueryHandler.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.Application/Handlers/Tenants/GetTenantByIdQueryHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Application/Handlers/Tenants/GetTenantByIdQueryHandler.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SmartAiChat.Application/Handlers/Tenants/UpdateTenantCommandHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Application/Handlers/Tenants/UpdateTenantCommandHandler.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartAiChat.Application/Handlers/TrainingFile/DeleteTrainingFileCommandHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Application/Handlers/TrainingFile/DeleteTrainingFileCommandHandler.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SmartAiChat.Application/Handlers/TrainingFile/GetAllTrainingFilesQueryHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Application/Handlers/TrainingFile/GetAllTrainingFilesQueryHandler.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartAiChat.Application/Handlers/TrainingFile/GetTrainingFileByIdQueryHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Application/Handlers/TrainingFile/GetTrainingFileByIdQueryHandler.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SmartAiChat.Application/Handlers/TrainingFile/UploadTrainingFileCommandHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Application/Handlers/TrainingFile/UploadTrainingFileCommandHandler.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartAiChat.Application/Handlers/Users/CreateUserCommandHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Application/Handlers/Users/CreateUserCommandHandler.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartAiChat.Application/Handlers/Users/DeleteUserCommandHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Application/Handlers/Users/DeleteUserCommandHandler.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SmartAiChat.Application/Handlers/Users/GetAllUsersQueryHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Application/Handlers/Users/GetAllUsersQueryHandler.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartAiChat.Application/Handlers/Users/GetUserByIdQueryHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Application/Handlers/Users/GetUserByIdQueryHandler.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartAiChat.Application/Handlers/Users/UpdateUserCommandHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Application/Handlers/Users/UpdateUserCommandHandler.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartAiChat.Application/Mappings/AutoMapperProfile.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Application/Mappings/AutoMapperProfile.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartAiChat.Application/Queries/FAQ/GetAllFaqEntriesQuery.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Application/Queries/FAQ/GetAllFaqEntriesQuery.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartAiChat.Application/Queries/TrainingFile/GetAllTrainingFilesQuery.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Application/Queries/TrainingFile/GetAllTrainingFilesQuery.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartAiChat.Application/SmartAiChat.Application.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Application/SmartAiChat.Application.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.Application/Queries/ChatSessions/GetChatSessionQuery.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Application/Queries/ChatSessions/GetChatSessionQuery.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.Domain/Entities/AiConfiguration.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Domain/Entities/AiConfiguration.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.Domain/Entities/ChatMessage.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Domain/Entities/ChatMessage.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.Domain/Entities/ChatSession.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Domain/Entities/ChatSession.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.Domain/Entities/Tenant.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Domain/Entities/Tenant.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.Domain/Entities/User.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Domain/Entities/User.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.Domain/Interfaces/IFileProcessingService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Domain/Interfaces/IFileProcessingService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.Infrastructure/Repositories/Search/SearchExpressionBuilder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Infrastructure/Repositories/Search/SearchExpressionBuilder.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.Infrastructure/Repositories/UnitOfWork.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Infrastructure/Repositories/UnitOfWork.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.Infrastructure/Services/AiServiceFactory.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Infrastructure/Services/AiServiceFactory.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SmartAiChat.Infrastructure/Services/FileProcessingService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Infrastructure/Services/FileProcessingService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.Infrastructure/Services/JwtTokenService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Infrastructure/Services/JwtTokenService.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SmartAiChat.Infrastructure/Services/OpenAiService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Infrastructure/Services/OpenAiService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartAiChat.Infrastructure/SmartAiChat.Infrastructure.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Infrastructure/SmartAiChat.Infrastructure.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartAiChat.Persistence/ApplicationDbContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Persistence/ApplicationDbContext.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.Infrastructure/Services/SentimentAnalysis/SentimentAnalysisService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Infrastructure/Services/SentimentAnalysis/SentimentAnalysisService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.Infrastructure/Services/Translation/TranslationService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Infrastructure/Services/Translation/TranslationService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.Persistence/Configurations/AiConfigurationConfiguration.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Persistence/Configurations/AiConfigurationConfiguration.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.Persistence/Configurations/ChatMessageConfiguration.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Persistence/Configurations/ChatMessageConfiguration.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.Persistence/Configurations/ChatSessionConfiguration.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Persistence/Configurations/ChatSessionConfiguration.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.Persistence/Configurations/TenantConfiguration.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Persistence/Configurations/TenantConfiguration.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.Persistence/Configurations/TenantSubscriptionConfiguration.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Persistence/Configurations/TenantSubscriptionConfiguration.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.Persistence/Configurations/UserConfiguration.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Persistence/Configurations/UserConfiguration.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.Persistence/Migrations/20250714123626_InitialCreate.Designer.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.Persistence/Migrations/20250714123626_InitialCreate.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.Persistence/Migrations/ApplicationDbContextModelSnapshot.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Persistence/Migrations/ApplicationDbContextModelSnapshot.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.Shared/Models/ApiResponse.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Shared/Models/ApiResponse.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.Shared/Models/PaginatedResponse.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Shared/Models/PaginatedResponse.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.Tests/Application/Handlers/AIConfiguration/GetAiConfigurationQueryHandlerTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Tests/Application/Handlers/AIConfiguration/GetAiConfigurationQueryHandlerTests.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.Tests/Application/Handlers/AIConfiguration/UpdateAiConfigurationCommandHandlerTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Tests/Application/Handlers/AIConfiguration/UpdateAiConfigurationCommandHandlerTests.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.Tests/Application/Handlers/FAQ/CreateFaqEntryCommandHandlerTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Tests/Application/Handlers/FAQ/CreateFaqEntryCommandHandlerTests.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.Tests/Application/Handlers/FAQ/DeleteFaqEntryCommandHandlerTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Tests/Application/Handlers/FAQ/DeleteFaqEntryCommandHandlerTests.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.Tests/Application/Handlers/FAQ/GetAllFaqEntriesQueryHandlerTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Tests/Application/Handlers/FAQ/GetAllFaqEntriesQueryHandlerTests.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.Tests/Application/Handlers/FAQ/GetFaqEntryByIdQueryHandlerTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Tests/Application/Handlers/FAQ/GetFaqEntryByIdQueryHandlerTests.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.Tests/Application/Handlers/FAQ/UpdateFaqEntryCommandHandlerTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Tests/Application/Handlers/FAQ/UpdateFaqEntryCommandHandlerTests.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.Tests/Application/Handlers/StartChatSessionHandlerTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Tests/Application/Handlers/StartChatSessionHandlerTests.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.Tests/Application/Handlers/Tenants/CreateTenantCommandHandlerTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Tests/Application/Handlers/Tenants/CreateTenantCommandHandlerTests.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.Tests/Application/Handlers/TrainingFile/DeleteTrainingFileCommandHandlerTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Tests/Application/Handlers/TrainingFile/DeleteTrainingFileCommandHandlerTests.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.Tests/Application/Handlers/TrainingFile/GetAllTrainingFilesQueryHandlerTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Tests/Application/Handlers/TrainingFile/GetAllTrainingFilesQueryHandlerTests.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.Tests/Application/Handlers/TrainingFile/GetTrainingFileByIdQueryHandlerTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Tests/Application/Handlers/TrainingFile/GetTrainingFileByIdQueryHandlerTests.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.Tests/Application/Handlers/TrainingFile/UploadTrainingFileCommandHandlerTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Tests/Application/Handlers/TrainingFile/UploadTrainingFileCommandHandlerTests.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.Tests/Application/Handlers/Users/CreateUserCommandHandlerTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Tests/Application/Handlers/Users/CreateUserCommandHandlerTests.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.Tests/Application/Handlers/Users/DeleteUserCommandHandlerTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Tests/Application/Handlers/Users/DeleteUserCommandHandlerTests.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.Tests/Application/Handlers/Users/GetAllUsersQueryHandlerTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Tests/Application/Handlers/Users/GetAllUsersQueryHandlerTests.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.Tests/Application/Handlers/Users/GetUserByIdQueryHandlerTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Tests/Application/Handlers/Users/GetUserByIdQueryHandlerTests.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartAiChat.Tests/Application/Handlers/Users/UpdateUserCommandHandlerTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SmartAiChat.Tests/Application/Handlers/Users/UpdateUserCommandHandlerTests.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,7 +90,21 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="feature/implement-all-unfinished-sections" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RESET_MODE" value="MIXED" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/49e178150e3a48d3984c5d85eed0e0a528908/0b/fb42b7c2/RateLimitPartition.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/2c8e7ca976f350cba9836d5565dac56b11e0b56656fa786460eb1395857a6fa/ThrowHelper.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/acc1b77cc45c4a40776b82171fa4ec222605366a852c29d3fc53459da0e72d/Unit.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/ce37be1a06b16c6faa02038d2cc477dd3bca5b217ceeb41c5f2ad45c1bf9/ServiceProvider.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://D:/Project/Develop/SmartAIChat/src/SmartAiChat.Domain/Entities/User.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/Project/Develop/SmartAIChat/src/SmartAiChat.Tests/Application/Handlers/TrainingFile/UploadTrainingFileCommandHandlerTests.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
   <component name="ProjectColorInfo">{
@@ -63,20 +116,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    ".NET Launch Settings Profile.SmartAiChat.API: http.executor": "Debug",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "feature/implement-all-unfinished-sections",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;.NET Launch Settings Profile.SmartAiChat.API: http.executor&quot;: &quot;Debug&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;fix-csharp-errors&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected=".NET Launch Settings Profile.SmartAiChat.API: http">
     <configuration name="SmartAiChat.API: IIS Express" type="LaunchSettings" factoryName=".NET Launch Settings Profile">
       <option name="LAUNCH_PROFILE_PROJECT_FILE_PATH" value="$PROJECT_DIR$/SmartAiChat.API/SmartAiChat.API.csproj" />
@@ -135,7 +188,18 @@
       <workItem from="1752498216679" duration="3946000" />
       <workItem from="1752638140898" duration="1498000" />
       <workItem from="1752644056552" duration="199000" />
+      <workItem from="1752663172555" duration="2317000" />
+      <workItem from="1752666653046" duration="6931000" />
     </task>
+    <task id="LOCAL-00001" summary="fix : errors">
+      <option name="closed" value="true" />
+      <created>1752657476267</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1752657476267</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -145,5 +209,26 @@
   <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+    <MESSAGE value="fix : errors" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix : errors" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/SmartAiChat.Application/Commands/TrainingFile/UploadTrainingFileCommand.cs</url>
+          <line>8</line>
+          <properties documentPath="D:\Project\Develop\SmartAIChat\src\SmartAiChat.Application\Commands\TrainingFile\UploadTrainingFileCommand.cs" containingFunctionPresentation="Property 'File'">
+            <startOffsets>
+              <option value="254" />
+            </startOffsets>
+            <endOffsets>
+              <option value="258" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

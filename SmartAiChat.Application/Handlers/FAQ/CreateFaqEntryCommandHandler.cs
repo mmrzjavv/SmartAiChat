@@ -31,7 +31,7 @@ namespace SmartAiChat.Application.Handlers.FAQ
                 faqEntry.Tags = JsonSerializer.Serialize(request.Tags);
             }
 
-            _unitOfWork.FaqEntries.Add<FaqEntry>(faqEntry);
+            await _unitOfWork.FaqEntries.AddAsync(faqEntry, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return _mapper.Map<FaqEntryDto>(faqEntry);

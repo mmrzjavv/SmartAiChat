@@ -24,9 +24,9 @@ public class ChatSessionConfiguration : IEntityTypeConfiguration<ChatSession>
             .HasMaxLength(100);
 
         builder.Property(cs => cs.Status)
-            .IsRequired()
             .HasConversion<string>()
-            .HasDefaultValue(ChatSessionStatus.Active);
+            .HasDefaultValue(ChatSessionStatus.Active)
+            .IsRequired(false);
 
         builder.Property(cs => cs.CustomerName)
             .IsRequired()
@@ -69,10 +69,8 @@ public class ChatSessionConfiguration : IEntityTypeConfiguration<ChatSession>
         builder.Property(cs => cs.Notes)
             .HasMaxLength(2000);
 
-        // Indexes
         builder.HasIndex(cs => cs.TenantId)
             .HasDatabaseName("IX_ChatSessions_TenantId");
-
         builder.HasIndex(cs => cs.SessionId)
             .IsUnique()
             .HasDatabaseName("IX_ChatSessions_SessionId");
@@ -103,7 +101,7 @@ public class ChatSessionConfiguration : IEntityTypeConfiguration<ChatSession>
         builder.HasOne(cs => cs.Operator)
             .WithMany()
             .HasForeignKey(cs => cs.OperatorId)
-            .OnDelete(DeleteBehavior.SetNull);
+            .OnDelete(DeleteBehavior.NoAction); // Changed from Restrict to NoAction
 
         builder.HasMany(cs => cs.Messages)
             .WithOne(cm => cm.ChatSession)
@@ -115,4 +113,6 @@ public class ChatSessionConfiguration : IEntityTypeConfiguration<ChatSession>
             .HasForeignKey(oa => oa.ChatSessionId)
             .OnDelete(DeleteBehavior.Cascade);
     }
-} 
+}
+
+

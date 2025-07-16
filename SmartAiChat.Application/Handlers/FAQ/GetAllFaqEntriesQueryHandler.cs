@@ -22,7 +22,6 @@ namespace SmartAiChat.Application.Handlers.FAQ
 
         public async Task<PaginatedResponse<FaqEntryDto>> Handle(GetAllFaqEntriesQuery request, CancellationToken cancellationToken)
         {
-            var tenantId = _tenantContext.TenantId;
             var pagedResult = await _unitOfWork.FaqEntries.GetPagedAsync(request.Pagination, cancellationToken);
             var faqEntryDtos = _mapper.Map<IEnumerable<FaqEntryDto>>(pagedResult.Items);
             return PaginatedResponse<FaqEntryDto>.Create(

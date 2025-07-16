@@ -5,11 +5,6 @@ using SmartAiChat.Application.Commands.TrainingFile;
 using SmartAiChat.Application.Handlers.TrainingFile;
 using SmartAiChat.Domain.Entities;
 using SmartAiChat.Domain.Interfaces;
-using System;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace SmartAiChat.Tests.Application.Handlers.TrainingFile
 {

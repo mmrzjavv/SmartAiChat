@@ -73,12 +73,12 @@ public class TenantConfiguration : IEntityTypeConfiguration<Tenant>
         builder.HasMany(t => t.Users)
             .WithOne(u => u.Tenant)
             .HasForeignKey(u => u.TenantId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasMany(t => t.ChatSessions)
             .WithOne(cs => cs.Tenant)
             .HasForeignKey(cs => cs.TenantId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(t => t.TenantSubscription)
             .WithOne(ts => ts.Tenant)
@@ -93,11 +93,11 @@ public class TenantConfiguration : IEntityTypeConfiguration<Tenant>
         builder.HasMany(t => t.FaqEntries)
             .WithOne(fe => fe.Tenant)
             .HasForeignKey(fe => fe.TenantId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasMany(t => t.AiTrainingFiles)
             .WithOne(atf => atf.Tenant)
             .HasForeignKey(atf => atf.TenantId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Restrict);
     }
 } 

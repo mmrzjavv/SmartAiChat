@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace SmartAiChat.Infrastructure.Services.SentimentAnalysis
 {
     public class SentimentAnalysisService

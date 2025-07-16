@@ -1,11 +1,8 @@
 using MediatR;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.Extensions.Logging;
 using SmartAiChat.Application.Commands.ChatMessages;
 using SmartAiChat.Domain.Interfaces;
 using SmartAiChat.Shared.Enums;
-using System;
-using System.Threading.Tasks;
 
 namespace SmartAiChat.API.Hubs;
 
@@ -14,7 +11,7 @@ public class ChatHub : Hub
     private readonly ITenantContext _tenantContext;
     private readonly ILogger<ChatHub> _logger;
     private readonly ISender _sender;
-    private static readonly Dictionary<string, string> _connections = new Dictionary<string, string>();
+    private static readonly Dictionary<string, string> Connections = new Dictionary<string, string>();
 
     private readonly IUnitOfWork _unitOfWork;
 
@@ -30,7 +27,7 @@ public class ChatHub : Hub
     {
         try
         {
-            var tenantId = _tenantContext.GetTenantId();
+            var tenantId = _tenantContext.TenantId;
             var chatSession = await _unitOfWork.ChatSessions.GetByIdAsync(Guid.Parse(sessionId), tenantId);
 
             if (chatSession == null)
@@ -40,7 +37,7 @@ public class ChatHub : Hub
             }
 
             await Groups.AddToGroupAsync(Context.ConnectionId, $"chat_{sessionId}");
-            _connections[Context.ConnectionId] = sessionId;
+            Connections[Context.ConnectionId] = sessionId;
             await Clients.Group($"chat_{sessionId}").SendAsync("UserJoined", Context.ConnectionId);
         }
         catch (Exception ex)
@@ -88,7 +85,7 @@ public class ChatHub : Hub
             }
             else
             {
-                await Clients.Caller.SendAsync("Error", result.ErrorMessage);
+                await Clients.Caller.SendAsync("Error", result.Message);
             }
         }
         catch (Exception ex)
@@ -148,10 +145,10 @@ public class ChatHub : Hub
 
     public override async Task OnDisconnectedAsync(Exception? exception)
     {
-        if (_connections.TryGetValue(Context.ConnectionId, out var sessionId))
+        if (Connections.TryGetValue(Context.ConnectionId, out var sessionId))
         {
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, $"chat_{sessionId}");
-            _connections.Remove(Context.ConnectionId);
+            Connections.Remove(Context.ConnectionId);
             await Clients.Group($"chat_{sessionId}").SendAsync("UserLeft", Context.ConnectionId);
         }
         await base.OnDisconnectedAsync(exception);

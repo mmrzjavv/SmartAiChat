@@ -3,8 +3,6 @@ using SmartAiChat.Domain.Interfaces;
 using SmartAiChat.Infrastructure.Services.SentimentAnalysis;
 using SmartAiChat.Infrastructure.Services.Translation;
 using SmartAiChat.Shared.Enums;
-using System;
-using System.Net.Http;
 
 namespace SmartAiChat.Infrastructure.Services
 {

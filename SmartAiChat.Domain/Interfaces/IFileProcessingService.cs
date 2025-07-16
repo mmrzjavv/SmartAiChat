@@ -1,5 +1,3 @@
-using SmartAiChat.Domain.Entities;
-
 namespace SmartAiChat.Domain.Interfaces;
 
 public interface IFileProcessingService

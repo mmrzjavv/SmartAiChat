@@ -9,7 +9,7 @@ public class ChatSession : BaseEntity
     public Guid CustomerId { get; set; }
     public Guid? OperatorId { get; set; }
     public string SessionId { get; set; } = string.Empty;
-    public ChatSessionStatus Status { get; set; } = ChatSessionStatus.Active;
+    public ChatSessionStatus? Status { get; set; } = ChatSessionStatus.Active;
     public string CustomerName { get; set; } = string.Empty;
     public string CustomerEmail { get; set; } = string.Empty;
     public string? CustomerIpAddress { get; set; }
@@ -32,4 +32,4 @@ public class ChatSession : BaseEntity
     public virtual User? Operator { get; set; }
     public virtual ICollection<ChatMessage> Messages { get; set; } = new List<ChatMessage>();
     public virtual ICollection<OperatorActivity> OperatorActivities { get; set; } = new List<OperatorActivity>();
-} 
+}

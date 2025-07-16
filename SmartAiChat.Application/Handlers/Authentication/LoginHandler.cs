@@ -4,7 +4,6 @@ using SmartAiChat.Application.Commands.Authentication;
 using SmartAiChat.Application.DTOs;
 using SmartAiChat.Domain.Interfaces;
 using SmartAiChat.Shared.Models;
-using BCrypt.Net;
 
 namespace SmartAiChat.Application.Handlers.Authentication;
 

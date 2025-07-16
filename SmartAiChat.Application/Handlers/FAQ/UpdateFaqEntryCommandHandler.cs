@@ -2,7 +2,6 @@ using AutoMapper;
 using MediatR;
 using SmartAiChat.Application.Commands.FAQ;
 using SmartAiChat.Application.DTOs;
-using SmartAiChat.Domain.Entities;
 using SmartAiChat.Domain.Interfaces;
 using System.Text.Json;
 

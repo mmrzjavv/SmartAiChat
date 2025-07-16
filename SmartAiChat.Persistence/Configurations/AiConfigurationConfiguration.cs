@@ -20,9 +20,9 @@ public class AiConfigurationConfiguration : IEntityTypeConfiguration<AiConfigura
             .HasDefaultValue(true);
 
         builder.Property(ac => ac.Provider)
-            .IsRequired()
             .HasConversion<string>()
-            .HasDefaultValue(AiProvider.OpenAI);
+            .HasDefaultValue(AiProvider.OpenAI)
+            .IsRequired(false);
 
         builder.Property(ac => ac.ModelName)
             .IsRequired()
@@ -106,6 +106,11 @@ public class AiConfigurationConfiguration : IEntityTypeConfiguration<AiConfigura
 
         builder.Property(ac => ac.EnableAnalytics)
             .HasDefaultValue(true);
+
+        builder.Property(ac => ac.InputCostPer1000Tokens)
+            .HasPrecision(18, 6);
+        builder.Property(ac => ac.OutputCostPer1000Tokens)
+            .HasPrecision(18, 6);
 
         // Indexes
         builder.HasIndex(ac => ac.TenantId)

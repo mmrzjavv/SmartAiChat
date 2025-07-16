@@ -19,35 +19,35 @@ public class ChatModule : ICarterModule
 
         // Start a new chat session
         group.MapPost("/sessions", StartChatSession)
-            .WithName("StartChatSession")
+            .WithName("ChatStartSession")
             .WithSummary("Start a new chat session")
             .WithDescription("Creates a new chat session for a customer")
             .Produces<ApiResponse<ChatSessionDto>>(StatusCodes.Status200OK)
-            .Produces<ApiResponse<ChatSessionDto>>(StatusCodes.Status400BadRequest)
+            .Produces<ApiResponse<object>>(StatusCodes.Status400BadRequest)
             .AllowAnonymous();
 
         // Get a chat session by ID
         group.MapGet("/sessions/{id:guid}", GetChatSession)
-            .WithName("GetChatSession")
+            .WithName("ChatGetSession")
             .WithSummary("Get a chat session by ID")
             .WithDescription("Retrieves a specific chat session")
             .Produces<ApiResponse<ChatSessionDto>>(StatusCodes.Status200OK)
-            .Produces<ApiResponse<ChatSessionDto>>(StatusCodes.Status404NotFound)
+            .Produces<ApiResponse<object>>(StatusCodes.Status404NotFound)
             .RequireAuthorization();
 
         // Send a message in a chat session
         group.MapPost("/messages", SendMessage)
-            .WithName("SendMessage")
+            .WithName("ChatSendMessage")
             .WithSummary("Send a message in a chat session")
             .WithDescription("Sends a message to a chat session")
             .Produces<ApiResponse<ChatMessageDto>>(StatusCodes.Status200OK)
-            .Produces<ApiResponse<ChatMessageDto>>(StatusCodes.Status400BadRequest)
+            .Produces<ApiResponse<object>>(StatusCodes.Status400BadRequest)
             .AllowAnonymous();
 
         // Get health status
-        group.MapGet("/health", GetHealth)
-            .WithName("GetChatHealth")
-            .WithSummary("Get health status")
+        group.MapGet("/health", GetChatHealth)
+            .WithName("ChatGetHealth")
+            .WithSummary("Get chat service health status")
             .WithDescription("Returns the health status of the chat service")
             .Produces<object>(StatusCodes.Status200OK)
             .AllowAnonymous();
@@ -55,9 +55,9 @@ public class ChatModule : ICarterModule
 
     private static async Task<IResult> StartChatSession(
         [FromBody] StartChatSessionCommand command,
-        IMediator mediator)
+        ISender sender)
     {
-        var result = await mediator.Send(command);
+        var result = await sender.Send(command);
         
         return result.IsSuccess 
             ? Results.Ok(result) 
@@ -66,10 +66,10 @@ public class ChatModule : ICarterModule
 
     private static async Task<IResult> GetChatSession(
         Guid id,
-        IMediator mediator)
+        ISender sender)
     {
-        var query = new GetChatSessionQuery(id);
-        var result = await mediator.Send(query);
+        var query = new GetChatSessionQuery { Id = id };
+        var result = await sender.Send(query);
         
         return result.IsSuccess 
             ? Results.Ok(result) 
@@ -78,17 +78,17 @@ public class ChatModule : ICarterModule
 
     private static async Task<IResult> SendMessage(
         [FromBody] SendMessageCommand command,
-        IMediator mediator)
+        ISender sender)
     {
-        var result = await mediator.Send(command);
+        var result = await sender.Send(command);
         
         return result.IsSuccess 
             ? Results.Ok(result) 
             : Results.BadRequest(result);
     }
 
-    private static IResult GetHealth()
+    private static IResult GetChatHealth()
     {
         return Results.Ok(new { status = "healthy", timestamp = DateTime.UtcNow });
     }
-} 
+}

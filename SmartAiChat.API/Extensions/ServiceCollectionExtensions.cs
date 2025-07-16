@@ -1,6 +1,5 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -47,6 +46,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<SentimentAnalysisService>();
         services.AddSingleton<TranslationService>();
         services.AddSingleton<IFileProcessingService, FileProcessingService>();
+        services.AddScoped<IAiService, OpenAiService>();
 
         return services;
     }
@@ -81,9 +81,9 @@ public static class ServiceCollectionExtensions
             options.AddPolicy(SystemConstants.Policies.SuperAdminOnly, policy =>
                 policy.RequireClaim(SystemConstants.ClaimTypes.Role, SystemConstants.Roles.SuperAdmin));
 
-            // Tenant Admin or above policy  
+            // Tenant Admin or above policy
             options.AddPolicy(SystemConstants.Policies.TenantAdminOrAbove, policy =>
-                policy.RequireClaim(SystemConstants.ClaimTypes.Role, 
+                policy.RequireClaim(SystemConstants.ClaimTypes.Role,
                     SystemConstants.Roles.SuperAdmin,
                     SystemConstants.Roles.TenantAdmin));
 
@@ -110,31 +110,98 @@ public static class ServiceCollectionExtensions
     {
         services.AddSwaggerGen(c =>
         {
-            c.SwaggerDoc("v1", new OpenApiInfo 
-            { 
-                Title = "SmartAiChat API", 
+            c.SwaggerDoc("v1", new OpenApiInfo
+            {
+                Title = "SmartAiChat API",
                 Version = "v1",
                 Description = "Multi-tenant AI-powered live chat platform"
             });
-            
-            // Include XML comments
+
+         
+
+            // More robust custom operation ID generation
+            c.CustomOperationIds(apiDesc =>
+            {
+                try
+                {
+                    // Get route template and clean it up
+                    var routeTemplate = apiDesc.RelativePath ?? "unknown";
+                    var cleanRoute = routeTemplate.Replace("/", "_")
+                                                 .Replace("{", "")
+                                                 .Replace("}", "")
+                                                 .Replace("-", "_")
+                                                 .Replace(":", "_")
+                                                 .Trim('_');
+
+                    // Get HTTP method
+                    var httpMethod = apiDesc.HttpMethod?.ToLower() ?? "unknown";
+
+                    // Try to get a meaningful name from metadata
+                    var endpointName = apiDesc.ActionDescriptor.EndpointMetadata?
+                        .OfType<Microsoft.AspNetCore.Routing.EndpointNameMetadata>()
+                        .FirstOrDefault()?.EndpointName;
+
+                    if (!string.IsNullOrEmpty(endpointName))
+                    {
+                        return $"{httpMethod}_{endpointName}";
+                    }
+
+                    // Create a unique but predictable operation ID
+                    var operationId = $"{httpMethod}_{cleanRoute}";
+                    
+                    // If still empty or just underscore, use a fallback
+                    if (string.IsNullOrEmpty(operationId) || operationId == "_" || operationId == "unknown_")
+                    {
+                        operationId = $"{httpMethod}_operation_{Math.Abs(apiDesc.GetHashCode())}";
+                    }
+
+                    return operationId;
+                }
+                catch (Exception)
+                {
+                    // Fallback in case of any error
+                    return $"{apiDesc.HttpMethod?.ToLower() ?? "unknown"}_{Math.Abs(apiDesc.GetHashCode())}";
+                }
+            });
+
+            // Custom schema IDs to prevent type conflicts
+            c.CustomSchemaIds(type => 
+            {
+                // Handle nested types
+                if (type.DeclaringType != null)
+                {
+                    return $"{type.DeclaringType.Name}_{type.Name}";
+                }
+                
+                // Handle generic types
+                if (type.IsGenericType)
+                {
+                    var genericTypeName = type.Name.Split('`')[0];
+                    var genericArgs = string.Join("_", type.GetGenericArguments().Select(x => x.Name));
+                    return $"{genericTypeName}_{genericArgs}";
+                }
+
+                return type.Name;
+            });
+
+            // Include XML comments if available
             var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
             var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
             if (File.Exists(xmlPath))
             {
                 c.IncludeXmlComments(xmlPath);
             }
-            
+
             // Add JWT security definition
             c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
-                Description = "JWT Authorization header using the Bearer scheme",
+                Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
                 Name = "Authorization",
                 In = ParameterLocation.Header,
                 Type = SecuritySchemeType.ApiKey,
                 Scheme = "Bearer"
             });
-            
+
             c.AddSecurityRequirement(new OpenApiSecurityRequirement
             {
                 {
@@ -149,6 +216,16 @@ public static class ServiceCollectionExtensions
                     new string[] {}
                 }
             });
+
+            // Additional configuration for minimal APIs
+            c.DocInclusionPredicate((docName, apiDesc) =>
+            {
+                // Only include each unique combination once
+                return apiDesc.RelativePath != null;
+            });
+
+            // Configure for better Carter integration
+            c.SupportNonNullableReferenceTypes();
         });
 
         return services;
@@ -165,7 +242,8 @@ public static class ServiceCollectionExtensions
                 {
                     builder.WithOrigins(allowedOrigins)
                            .AllowAnyHeader()
-                           .AllowAnyMethod();
+                           .AllowAnyMethod()
+                           .AllowCredentials();
                 }
                 else
                 {
@@ -183,13 +261,34 @@ public static class ServiceCollectionExtensions
     {
         services.AddRateLimiter(options =>
         {
-            options.AddFixedWindowLimiter("fixed", opt =>
+            // Default fixed window limiter
+            options.AddFixedWindowLimiter("default", opt =>
             {
                 opt.PermitLimit = 100;
                 opt.Window = TimeSpan.FromMinutes(1);
                 opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
                 opt.QueueLimit = 10;
             });
+
+            // Chat-specific limiter
+            options.AddFixedWindowLimiter("ChatPolicy", opt =>
+            {
+                opt.PermitLimit = 50;
+                opt.Window = TimeSpan.FromMinutes(1);
+                opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+                opt.QueueLimit = 5;
+            });
+
+            // API-specific limiter
+            options.AddFixedWindowLimiter("ApiPolicy", opt =>
+            {
+                opt.PermitLimit = 200;
+                opt.Window = TimeSpan.FromMinutes(1);
+                opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+                opt.QueueLimit = 20;
+            });
+
+            options.RejectionStatusCode = 429;
         });
 
         return services;
@@ -212,4 +311,4 @@ public static class ServiceCollectionExtensions
 
         return services;
     }
-} 
+}

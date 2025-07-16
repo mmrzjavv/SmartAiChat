@@ -132,7 +132,7 @@ public class JwtTokenService : IJwtTokenService
                 ValidateIssuer = false,
                 ValidateAudience = false,
                 ClockSkew = TimeSpan.Zero
-            }, out SecurityToken validatedToken);
+            }, out _);
 
             return Task.FromResult(true);
         }

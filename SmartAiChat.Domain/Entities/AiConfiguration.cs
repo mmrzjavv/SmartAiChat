@@ -7,7 +7,7 @@ public class AiConfiguration : BaseEntity
 {
     public Guid TenantId { get; set; }
     public bool IsEnabled { get; set; } = true;
-    public AiProvider Provider { get; set; } = AiProvider.OpenAI;
+    public AiProvider? Provider { get; set; } = AiProvider.OpenAI;
     public string ModelName { get; set; } = "gpt-3.5-turbo";
     public string? ApiKey { get; set; }
     public string? ApiEndpoint { get; set; }

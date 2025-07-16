@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SmartAiChat.Domain.Entities;
-using SmartAiChat.Shared.Enums;
 
 namespace SmartAiChat.Persistence.Configurations;
 

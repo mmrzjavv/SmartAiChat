@@ -22,7 +22,6 @@ namespace SmartAiChat.Application.Handlers.TrainingFile
 
         public async Task<PaginatedResponse<AiTrainingFileDto>> Handle(GetAllTrainingFilesQuery request, CancellationToken cancellationToken)
         {
-            var tenantId = _tenantContext.TenantId;
             var pagedResult = await _unitOfWork.AiTrainingFiles.GetPagedAsync(request.Pagination, cancellationToken);
             var trainingFileDtos = _mapper.Map<IEnumerable<AiTrainingFileDto>>(pagedResult.Items);
             return PaginatedResponse<AiTrainingFileDto>.Create(

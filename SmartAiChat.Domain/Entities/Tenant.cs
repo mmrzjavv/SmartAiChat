@@ -1,5 +1,4 @@
 using SmartAiChat.Shared;
-using SmartAiChat.Shared.Enums;
 
 namespace SmartAiChat.Domain.Entities;
 
@@ -25,4 +24,4 @@ public class Tenant : BaseEntity
     public virtual AiConfiguration? AiConfiguration { get; set; }
     public virtual ICollection<FaqEntry> FaqEntries { get; set; } = new List<FaqEntry>();
     public virtual ICollection<AiTrainingFile> AiTrainingFiles { get; set; } = new List<AiTrainingFile>();
-} 
+}

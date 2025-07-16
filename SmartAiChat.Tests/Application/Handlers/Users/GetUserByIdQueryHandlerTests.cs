@@ -7,7 +7,6 @@ using SmartAiChat.Application.Handlers.Users;
 using SmartAiChat.Application.Queries.Users;
 using SmartAiChat.Domain.Entities;
 using SmartAiChat.Domain.Interfaces;
-using Xunit;
 
 namespace SmartAiChat.Tests.Application.Handlers.Users;
 

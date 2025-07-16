@@ -1,6 +1,3 @@
-using Microsoft.AspNetCore.Http;
-using System.Threading.Tasks;
-
 namespace SmartAiChat.API.Middleware
 {
     public class SecureHeadersMiddleware

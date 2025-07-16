@@ -2,6 +2,8 @@ using Carter;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SmartAiChat.Application.Commands.Authentication;
+using SmartAiChat.Application.DTOs;
+using SmartAiChat.Shared.Models;
 
 namespace SmartAiChat.API.Modules;
 
@@ -14,35 +16,35 @@ public class AuthModule : ICarterModule
             .WithOpenApi();
 
         group.MapPost("/register", Register)
-            .WithName("Register")
+            .WithName("AuthRegister")
             .WithSummary("Register a new user")
             .WithDescription("Creates a new user account")
-            .Produces(StatusCodes.Status200OK)
-            .Produces(StatusCodes.Status400BadRequest)
+            .Produces<ApiResponse<UserDto>>(StatusCodes.Status200OK)
+            .Produces<ApiResponse<object>>(StatusCodes.Status400BadRequest)
             .AllowAnonymous();
 
         group.MapPost("/login", Login)
-            .WithName("Login")
+            .WithName("AuthLogin")
             .WithSummary("User login")
             .WithDescription("Authenticates a user and returns tokens")
-            .Produces(StatusCodes.Status200OK)
-            .Produces(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponse<LoginResponseDto>>(StatusCodes.Status200OK)
+            .Produces<ApiResponse<object>>(StatusCodes.Status401Unauthorized)
             .AllowAnonymous();
 
         group.MapPost("/refresh-token", RefreshToken)
-            .WithName("RefreshToken")
+            .WithName("AuthRefreshToken")
             .WithSummary("Refresh authentication token")
             .WithDescription("Requests a new access token using a refresh token")
-            .Produces(StatusCodes.Status200OK)
-            .Produces(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponse<LoginResponseDto>>(StatusCodes.Status200OK)
+            .Produces<ApiResponse<object>>(StatusCodes.Status401Unauthorized)
             .AllowAnonymous();
     }
 
     private static async Task<IResult> Register(
         [FromBody] RegisterCommand command,
-        IMediator mediator)
+        ISender sender)
     {
-        var result = await mediator.Send(command);
+        var result = await sender.Send(command);
         return result.IsSuccess
             ? Results.Ok(result)
             : Results.BadRequest(result);
@@ -50,9 +52,9 @@ public class AuthModule : ICarterModule
 
     private static async Task<IResult> Login(
         [FromBody] LoginCommand command,
-        IMediator mediator)
+        ISender sender)
     {
-        var result = await mediator.Send(command);
+        var result = await sender.Send(command);
         return result.IsSuccess
             ? Results.Ok(result)
             : Results.Unauthorized();
@@ -60,11 +62,11 @@ public class AuthModule : ICarterModule
 
     private static async Task<IResult> RefreshToken(
         [FromBody] RefreshTokenCommand command,
-        IMediator mediator)
+        ISender sender)
     {
-        var result = await mediator.Send(command);
+        var result = await sender.Send(command);
         return result.IsSuccess
             ? Results.Ok(result)
             : Results.Unauthorized();
     }
-} 
+}

@@ -2,14 +2,11 @@ using AutoMapper;
 using FluentAssertions;
 using Moq;
 using SmartAiChat.Application.Commands.ChatSessions;
-using SmartAiChat.Application.DTOs;
 using SmartAiChat.Application.Handlers.ChatSessions;
 using SmartAiChat.Application.Mappings;
 using SmartAiChat.Domain.Entities;
 using SmartAiChat.Domain.Interfaces;
 using SmartAiChat.Shared.Enums;
-using SmartAiChat.Shared.Models;
-using Xunit;
 
 namespace SmartAiChat.Tests.Application.Handlers;
 

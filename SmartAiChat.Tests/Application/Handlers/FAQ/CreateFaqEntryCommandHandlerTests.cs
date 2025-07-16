@@ -4,11 +4,6 @@ using SmartAiChat.Application.Commands.FAQ;
 using SmartAiChat.Application.Handlers.FAQ;
 using SmartAiChat.Domain.Entities;
 using SmartAiChat.Domain.Interfaces;
-using System;
-using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace SmartAiChat.Tests.Application.Handlers.FAQ
 {

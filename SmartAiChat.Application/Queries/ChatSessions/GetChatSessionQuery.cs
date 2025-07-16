@@ -8,8 +8,5 @@ public class GetChatSessionQuery : IRequest<ApiResponse<ChatSessionDto>>
 {
     public Guid Id { get; set; }
     
-    public GetChatSessionQuery(Guid id)
-    {
-        Id = id;
-    }
+
 } 

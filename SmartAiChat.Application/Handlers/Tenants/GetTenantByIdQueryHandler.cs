@@ -2,7 +2,6 @@ using AutoMapper;
 using MediatR;
 using SmartAiChat.Application.DTOs;
 using SmartAiChat.Application.Queries.Tenants;
-using SmartAiChat.Domain.Entities;
 using SmartAiChat.Domain.Interfaces;
 
 namespace SmartAiChat.Application.Handlers.Tenants;

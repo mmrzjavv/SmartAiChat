@@ -1,6 +1,5 @@
 using MediatR;
 using SmartAiChat.Application.Commands.Tenants;
-using SmartAiChat.Domain.Entities;
 using SmartAiChat.Domain.Interfaces;
 
 namespace SmartAiChat.Application.Handlers.Tenants;

@@ -1,6 +1,5 @@
 using AutoMapper;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using SmartAiChat.Application.Commands.TrainingFile;
 using SmartAiChat.Application.DTOs;
 using SmartAiChat.Domain.Entities;
@@ -46,7 +45,7 @@ namespace SmartAiChat.Application.Handlers.TrainingFile
                 Tags = request.Tags != null ? JsonSerializer.Serialize(request.Tags) : null
             };
 
-            _unitOfWork.AiTrainingFiles.Add<AiTrainingFile>(trainingFile);
+            await _unitOfWork.AiTrainingFiles.AddAsync(trainingFile, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return _mapper.Map<AiTrainingFileDto>(trainingFile);

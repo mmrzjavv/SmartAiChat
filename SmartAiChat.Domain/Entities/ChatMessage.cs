@@ -7,7 +7,8 @@ public class ChatMessage : BaseEntity
 {
     public Guid TenantId { get; set; }
     public Guid ChatSessionId { get; set; }
-    public Guid? UserId { get; set; }
+    public Guid? UserId { get; set; }  // Made UserId nullable
+
     public ChatMessageType MessageType { get; set; }
     public string Content { get; set; } = string.Empty;
     public bool IsFromAi { get; set; } = false;
@@ -33,5 +34,4 @@ public class ChatMessage : BaseEntity
     // Navigation properties
     public virtual Tenant Tenant { get; set; } = null!;
     public virtual ChatSession ChatSession { get; set; } = null!;
-    public virtual User? User { get; set; }
-} 
+}

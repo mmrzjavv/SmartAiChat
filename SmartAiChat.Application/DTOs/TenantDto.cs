@@ -1,5 +1,3 @@
-using SmartAiChat.Shared.Enums;
-
 namespace SmartAiChat.Application.DTOs;
 
 public class TenantDto

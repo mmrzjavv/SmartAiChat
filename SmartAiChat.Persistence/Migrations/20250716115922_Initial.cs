@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace SmartAiChat.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -106,6 +106,8 @@ namespace SmartAiChat.Persistence.Migrations
                     RestrictedTopics = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LogConversations = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
                     EnableAnalytics = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
+                    InputCostPer1000Tokens = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    OutputCostPer1000Tokens = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -230,7 +232,6 @@ namespace SmartAiChat.Persistence.Migrations
                     EmbeddingModel = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     EmbeddingCreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     HasEmbeddings = table.Column<bool>(type: "bit", nullable: false),
-                    UploadedById = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -244,13 +245,13 @@ namespace SmartAiChat.Persistence.Migrations
                         column: x => x.TenantId,
                         principalTable: "Tenants",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_AiTrainingFiles_Users_UploadedById",
-                        column: x => x.UploadedById,
+                        name: "FK_AiTrainingFiles_Users_UploadedByUserId",
+                        column: x => x.UploadedByUserId,
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -291,7 +292,7 @@ namespace SmartAiChat.Persistence.Migrations
                         column: x => x.TenantId,
                         principalTable: "Tenants",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_ChatSessions_Users_CustomerId",
                         column: x => x.CustomerId,
@@ -302,8 +303,7 @@ namespace SmartAiChat.Persistence.Migrations
                         name: "FK_ChatSessions_Users_OperatorId",
                         column: x => x.OperatorId,
                         principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -343,7 +343,7 @@ namespace SmartAiChat.Persistence.Migrations
                         column: x => x.TenantId,
                         principalTable: "Tenants",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_FaqEntries_Users_CreatedById",
                         column: x => x.CreatedById,
@@ -403,12 +403,6 @@ namespace SmartAiChat.Persistence.Migrations
                         principalTable: "Tenants",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ChatMessages_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -452,7 +446,7 @@ namespace SmartAiChat.Persistence.Migrations
                         column: x => x.OperatorId,
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -472,9 +466,9 @@ namespace SmartAiChat.Persistence.Migrations
                 column: "TenantId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AiTrainingFiles_UploadedById",
+                name: "IX_AiTrainingFiles_UploadedByUserId",
                 table: "AiTrainingFiles",
-                column: "UploadedById");
+                column: "UploadedByUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ChatMessages_ChatSessionId",

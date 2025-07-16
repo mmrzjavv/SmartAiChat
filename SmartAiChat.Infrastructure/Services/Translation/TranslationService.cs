@@ -1,5 +1,3 @@
-using System.Threading.Tasks;
-
 namespace SmartAiChat.Infrastructure.Services.Translation
 {
     public class TranslationService

@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SmartAiChat.Domain.Entities;
-using SmartAiChat.Shared.Enums;
 
 namespace SmartAiChat.Persistence.Configurations;
 
@@ -96,9 +95,6 @@ public class ChatMessageConfiguration : IEntityTypeConfiguration<ChatMessage>
             .HasForeignKey(cm => cm.ChatSessionId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasOne(cm => cm.User)
-            .WithMany(u => u.ChatMessages)
-            .HasForeignKey(cm => cm.UserId)
-            .OnDelete(DeleteBehavior.SetNull);
+       
     }
-} 
+}
