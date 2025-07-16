@@ -15,18 +15,16 @@ public class DeleteUserCommandHandler : IRequestHandler<DeleteUserCommand>
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<Unit> Handle(DeleteUserCommand request, CancellationToken cancellationToken)
+    public async Task Handle(DeleteUserCommand request, CancellationToken cancellationToken)
     {
-        var user = await _unitOfWork.Repository<User>().GetByIdAsync(request.Id);
+        var user = await _unitOfWork.Users.GetByIdAsync(request.Id, cancellationToken);
 
         if (user == null)
         {
             throw new NotFoundException(nameof(User), request.Id);
         }
 
-        await _unitOfWork.Repository<User>().DeleteAsync(user);
-        await _unitOfWork.CompleteAsync();
-
-        return Unit.Value;
+        await _unitOfWork.Users.DeleteAsync(user, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
 }

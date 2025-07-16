@@ -27,11 +27,11 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, UserD
             Email = request.Email,
             PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
             Role = request.Role,
-            TenantId = _unitOfWork.TenantContext.GetTenantId()
+            TenantId = request.TenantId
         };
 
-        await _unitOfWork.Repository<User>().AddAsync(user);
-        await _unitOfWork.CompleteAsync();
+        await _unitOfWork.Users.AddAsync(user, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return _mapper.Map<UserDto>(user);
     }

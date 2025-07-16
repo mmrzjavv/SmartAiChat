@@ -1,9 +1,6 @@
 using Carter;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Carter;
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
 using SmartAiChat.Application.Commands.Tenants;
 using SmartAiChat.Application.Commands.Users;
 using SmartAiChat.Application.Queries.Tenants;
@@ -66,16 +63,6 @@ public class AdminModule : ICarterModule
             .WithDescription("Creates a new tenant (SuperAdmin only)")
             .RequireAuthorization(SystemConstants.Policies.SuperAdminOnly);
 
-        group.MapPut("/tenants/{id:guid}", UpdateTenant)
-            .WithName("UpdateTenant")
-            .WithSummary("Update a tenant")
-            .WithDescription("Updates an existing tenant");
-
-        group.MapDelete("/tenants/{id:guid}", DeleteTenant)
-            .WithName("DeleteTenant")
-            .WithSummary("Delete a tenant")
-            .WithDescription("Deletes a tenant (SuperAdmin only)")
-            .RequireAuthorization(SystemConstants.Policies.SuperAdminOnly);
 
         // AI Configuration endpoints
         group.MapGet("/ai-configuration", GetAiConfiguration)
@@ -165,8 +152,14 @@ public class AdminModule : ICarterModule
         return result is not null ? Results.Ok(result) : Results.NotFound();
     }
 
-    private static async Task<IResult> CreateUser(CreateUserCommand command, ISender sender)
+    private static async Task<IResult> CreateUser(CreateUserCommand command, ISender sender, HttpContext httpContext)
     {
+        var tenantId = httpContext.User.Claims.FirstOrDefault(c => c.Type == "TenantId")?.Value;
+        if (tenantId == null)
+        {
+            return Results.BadRequest("TenantId not found in token.");
+        }
+        command.TenantId = Guid.Parse(tenantId);
         var result = await sender.Send(command);
         return Results.Created($"/api/v1/admin/users/{result.Id}", result);
     }

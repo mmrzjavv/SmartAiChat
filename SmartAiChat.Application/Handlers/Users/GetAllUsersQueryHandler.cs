@@ -21,13 +21,8 @@ public class GetAllUsersQueryHandler : IRequestHandler<GetAllUsersQuery, Paginat
 
     public async Task<PaginatedResponse<UserDto>> Handle(GetAllUsersQuery request, CancellationToken cancellationToken)
     {
-        var (users, totalCount) = await _unitOfWork.Repository<User>().GetAllAsync(
-            request.Pagination.Page,
-            request.Pagination.PageSize,
-            u => u.TenantId == _unitOfWork.TenantContext.GetTenantId());
-
-        var userDtos = _mapper.Map<IEnumerable<UserDto>>(users);
-
-        return new PaginatedResponse<UserDto>(userDtos, totalCount, request.Pagination.Page, request.Pagination.PageSize);
+        var usersPage = await _unitOfWork.Users.GetPagedAsync(request.Pagination, cancellationToken);
+        var userDtos = _mapper.Map<IEnumerable<UserDto>>(usersPage.Items);
+        return PaginatedResponse<UserDto>.Create(userDtos.ToList(), usersPage.TotalCount, usersPage.Page, usersPage.PageSize);
     }
 }
