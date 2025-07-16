@@ -1,3 +1,4 @@
+// Ensure Microsoft.AspNetCore.Http.Abstractions is referenced in the .csproj
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Minio;
@@ -18,33 +19,35 @@ namespace SmartAiChat.Infrastructure.Services
 
         public FileProcessingService(IConfiguration configuration)
         {
-            var endpoint = configuration["Minio:Endpoint"];
-            var accessKey = configuration["Minio:AccessKey"];
-            var secretKey = configuration["Minio:SecretKey"];
+            // var endpoint = configuration["Minio:Endpoint"];
+            // var accessKey = configuration["Minio:AccessKey"];
+            // var secretKey = configuration["Minio:SecretKey"];
             _bucketName = configuration["Minio:BucketName"];
 
-            _minioClient = new MinioClient(endpoint, accessKey, secretKey);
+            // _minioClient = new MinioClient(endpoint, accessKey, secretKey);
         }
 
         public async Task<string> UploadFileAsync(IFormFile file, string tenantId)
         {
-            var bucketExists = await _minioClient.BucketExistsAsync(_bucketName);
-            if (!bucketExists)
-            {
-                await _minioClient.MakeBucketAsync(_bucketName);
-            }
+            // var bucketExists = await _minioClient.BucketExistsAsync(_bucketName);
+            // if (!bucketExists)
+            // {
+            //     await _minioClient.MakeBucketAsync(_bucketName);
+            // }
 
-            var fileName = $"{tenantId}/{Guid.NewGuid()}_{file.FileName}";
-            using (var stream = file.OpenReadStream())
-            {
-                await _minioClient.PutObjectAsync(_bucketName, fileName, stream, stream.Length, file.ContentType);
-            }
-            return fileName;
+            // var fileName = $"{tenantId}/{Guid.NewGuid()}_{file.FileName}";
+            // using (var stream = file.OpenReadStream())
+            // {
+            //     await _minioClient.PutObjectAsync(_bucketName, fileName, stream, stream.Length, file.ContentType);
+            // }
+            // return fileName;
+            throw new NotImplementedException();
         }
 
         public async Task DeleteFileAsync(string filePath)
         {
-            await _minioClient.RemoveObjectAsync(_bucketName, filePath);
+            // await _minioClient.RemoveObjectAsync(_bucketName, filePath);
+            throw new NotImplementedException();
         }
 
         public Task<string> ExtractTextFromFileAsync(string filePath, string contentType, CancellationToken cancellationToken = default)
@@ -71,15 +74,21 @@ namespace SmartAiChat.Infrastructure.Services
 
         public async Task<string> SaveFileAsync(Stream fileStream, string fileName, Guid tenantId, CancellationToken cancellationToken = default)
         {
-            var bucketExists = await _minioClient.BucketExistsAsync(_bucketName);
-            if (!bucketExists)
-            {
-                await _minioClient.MakeBucketAsync(_bucketName);
-            }
+            // var bucketExists = await _minioClient.BucketExistsAsync(_bucketName);
+            // if (!bucketExists)
+            // {
+            //     await _minioClient.MakeBucketAsync(_bucketName);
+            // }
 
-            var objectName = $"{tenantId}/{fileName}";
-            await _minioClient.PutObjectAsync(_bucketName, objectName, fileStream, fileStream.Length);
-            return objectName;
+            // var objectName = $"{tenantId}/{fileName}";
+            // await _minioClient.PutObjectAsync(_bucketName, objectName, fileStream, fileStream.Length);
+            // return objectName;
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> DeleteFileAsync(string filePath, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
         }
 
         public Task ProcessTrainingFileAsync(Guid fileId, CancellationToken cancellationToken = default)

@@ -19,9 +19,7 @@ public class GetAllTenantsQueryHandler : IRequestHandler<GetAllTenantsQuery, Pag
         _mapper = mapper;
     }
 
-using System.Linq;
-
-public async Task<PaginatedResponse<TenantDto>> Handle(GetAllTenantsQuery request, CancellationToken cancellationToken)
+    public async Task<PaginatedResponse<TenantDto>> Handle(GetAllTenantsQuery request, CancellationToken cancellationToken)
     {
         var tenants = await _unitOfWork.Tenants.GetPagedAsync(request.Pagination, cancellationToken);
         var tenantDtos = _mapper.Map<IEnumerable<TenantDto>>(tenants.Items);

@@ -21,10 +21,10 @@ namespace SmartAiChat.Application.Handlers.AIConfiguration
 
         public async Task<AiConfigurationDto> Handle(UpdateAiConfigurationCommand request, CancellationToken cancellationToken)
         {
-            var tenantId = _tenantContext.GetTenantId();
-            var aiConfiguration = await _unitOfWork.AiConfigurations.GetFirstOrDefaultAsync(
-                filter: c => c.TenantId == tenantId,
-                cancellationToken: cancellationToken);
+            var tenantId = _tenantContext.TenantId;
+            var aiConfiguration = await _unitOfWork.AiConfigurations.FirstOrDefaultAsync(
+                c => c.TenantId == tenantId,
+                cancellationToken);
 
             if (aiConfiguration == null)
             {
@@ -35,7 +35,7 @@ namespace SmartAiChat.Application.Handlers.AIConfiguration
             }
 
             _mapper.Map(request, aiConfiguration);
-            _unitOfWork.AiConfigurations.Update(aiConfiguration);
+            await _unitOfWork.AiConfigurations.UpdateAsync(aiConfiguration, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return _mapper.Map<AiConfigurationDto>(aiConfiguration);

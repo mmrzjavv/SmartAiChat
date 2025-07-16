@@ -7,7 +7,7 @@ using SmartAiChat.Shared.Models;
 
 namespace SmartAiChat.Application.Handlers.FAQ
 {
-    public class GetAllFaqEntriesQueryHandler : IRequestHandler<GetAllFaqEntriesQuery, PaginatedResult<FaqEntryDto>>
+    public class GetAllFaqEntriesQueryHandler : IRequestHandler<GetAllFaqEntriesQuery, PaginatedResponse<FaqEntryDto>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -20,22 +20,16 @@ namespace SmartAiChat.Application.Handlers.FAQ
             _tenantContext = tenantContext;
         }
 
-        public async Task<PaginatedResult<FaqEntryDto>> Handle(GetAllFaqEntriesQuery request, CancellationToken cancellationToken)
+        public async Task<PaginatedResponse<FaqEntryDto>> Handle(GetAllFaqEntriesQuery request, CancellationToken cancellationToken)
         {
-            var tenantId = _tenantContext.GetTenantId();
-            var (faqEntries, totalCount) = await _unitOfWork.FaqEntries.GetAsync(
-                filter: f => f.TenantId == tenantId,
-                page: request.Pagination.Page,
-                pageSize: request.Pagination.PageSize,
-                cancellationToken: cancellationToken);
-
-            var faqEntryDtos = _mapper.Map<IEnumerable<FaqEntryDto>>(faqEntries);
-
-            return new PaginatedResult<FaqEntryDto>(
-                faqEntryDtos,
-                totalCount,
-                request.Pagination.Page,
-                request.Pagination.PageSize);
+            var tenantId = _tenantContext.TenantId;
+            var pagedResult = await _unitOfWork.FaqEntries.GetPagedAsync(request.Pagination, cancellationToken);
+            var faqEntryDtos = _mapper.Map<IEnumerable<FaqEntryDto>>(pagedResult.Items);
+            return PaginatedResponse<FaqEntryDto>.Create(
+                faqEntryDtos.ToList(),
+                pagedResult.TotalCount,
+                pagedResult.Page,
+                pagedResult.PageSize);
         }
     }
 }

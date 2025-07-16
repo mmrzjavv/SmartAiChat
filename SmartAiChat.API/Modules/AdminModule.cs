@@ -9,6 +9,7 @@ using SmartAiChat.Application.Commands.FAQ;
 using SmartAiChat.Application.Commands.Tenants;
 using SmartAiChat.Application.Commands.TrainingFile;
 using SmartAiChat.Application.Commands.Users;
+using SmartAiChat.Application.DTOs;
 using SmartAiChat.Application.Queries.AIConfiguration;
 using SmartAiChat.Application.Queries.FAQ;
 using SmartAiChat.Application.Queries.Tenants;

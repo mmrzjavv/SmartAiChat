@@ -43,7 +43,10 @@ public class ApplicationDbContext : DbContext
         {
             if (typeof(BaseEntity).IsAssignableFrom(entityType.ClrType))
             {
-                modelBuilder.Entity(entityType.ClrType).HasQueryFilter(p => !EF.Property<bool>(p, "IsDeleted"));
+                var method = typeof(ApplicationDbContext)
+                    .GetMethod(nameof(SetSoftDeleteFilter), BindingFlags.NonPublic | BindingFlags.Static)?
+                    .MakeGenericMethod(entityType.ClrType);
+                method?.Invoke(null, new object[] { modelBuilder });
             }
         }
 
@@ -74,6 +77,11 @@ public class ApplicationDbContext : DbContext
         {
             modelBuilder.Entity<T>().HasQueryFilter(e => EF.Property<Guid>(e, "TenantId") == _tenantContext.TenantId);
         }
+    }
+
+    private static void SetSoftDeleteFilter<T>(ModelBuilder modelBuilder) where T : class
+    {
+        modelBuilder.Entity<T>().HasQueryFilter(e => !EF.Property<bool>(e, "IsDeleted"));
     }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

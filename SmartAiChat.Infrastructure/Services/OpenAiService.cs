@@ -8,7 +8,6 @@ using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using Tiktoken;
 
 namespace SmartAiChat.Infrastructure.Services
 {
@@ -133,9 +132,10 @@ namespace SmartAiChat.Infrastructure.Services
 
         public Task<decimal> CalculateCostAsync(string prompt, string response, AiConfiguration configuration, CancellationToken cancellationToken = default)
         {
-            var encoding = Tiktoken.Encoding.ForModel(configuration.ModelName);
-            var promptTokens = encoding.Encode(prompt).Count;
-            var responseTokens = encoding.Encode(response).Count;
+            // Remove any code referencing Tiktoken
+            // If token counting is needed, use a simple approximation: int tokenCount = message.Length / 4;
+            var promptTokens = prompt.Length; // Simple approximation
+            var responseTokens = response.Length; // Simple approximation
             var inputCost = (promptTokens / 1000m) * configuration.InputCostPer1000Tokens;
             var outputCost = (responseTokens / 1000m) * configuration.OutputCostPer1000Tokens;
             var totalCost = inputCost + outputCost;

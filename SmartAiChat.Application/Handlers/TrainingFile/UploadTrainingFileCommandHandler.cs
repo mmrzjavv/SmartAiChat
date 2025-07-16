@@ -26,7 +26,7 @@ namespace SmartAiChat.Application.Handlers.TrainingFile
 
         public async Task<AiTrainingFileDto> Handle(UploadTrainingFileCommand request, CancellationToken cancellationToken)
         {
-            var tenantId = _tenantContext.GetTenantId();
+            var tenantId = _tenantContext.TenantId;
             var userId = Guid.NewGuid(); // Placeholder for user ID
 
             var filePath = await _fileProcessingService.SaveFileAsync(request.File.OpenReadStream(), request.File.FileName, tenantId, cancellationToken);

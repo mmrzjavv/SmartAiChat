@@ -4,7 +4,7 @@ using SmartAiChat.Shared.Models;
 
 namespace SmartAiChat.Application.Queries.TrainingFile
 {
-    public class GetAllTrainingFilesQuery : IRequest<PaginatedResult<AiTrainingFileDto>>
+    public class GetAllTrainingFilesQuery : IRequest<PaginatedResponse<AiTrainingFileDto>>
     {
         public PaginationRequest Pagination { get; set; }
     }

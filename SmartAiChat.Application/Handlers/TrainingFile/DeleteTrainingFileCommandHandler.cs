@@ -4,7 +4,7 @@ using SmartAiChat.Domain.Interfaces;
 
 namespace SmartAiChat.Application.Handlers.TrainingFile
 {
-    public class DeleteTrainingFileCommandHandler : IRequestHandler<DeleteTrainingFileCommand>
+    public class DeleteTrainingFileCommandHandler : IRequestHandler<DeleteTrainingFileCommand, Unit>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ITenantContext _tenantContext;
@@ -19,10 +19,10 @@ namespace SmartAiChat.Application.Handlers.TrainingFile
 
         public async Task<Unit> Handle(DeleteTrainingFileCommand request, CancellationToken cancellationToken)
         {
-            var tenantId = _tenantContext.GetTenantId();
-            var trainingFile = await _unitOfWork.AiTrainingFiles.GetFirstOrDefaultAsync(
-                filter: f => f.Id == request.Id && f.TenantId == tenantId,
-                cancellationToken: cancellationToken);
+            var tenantId = _tenantContext.TenantId;
+            var trainingFile = await _unitOfWork.AiTrainingFiles.FirstOrDefaultAsync(
+                f => f.Id == request.Id && f.TenantId == tenantId,
+                cancellationToken);
 
             if (trainingFile == null)
             {

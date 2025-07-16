@@ -4,7 +4,7 @@ using SmartAiChat.Domain.Interfaces;
 
 namespace SmartAiChat.Application.Handlers.FAQ
 {
-    public class DeleteFaqEntryCommandHandler : IRequestHandler<DeleteFaqEntryCommand>
+    public class DeleteFaqEntryCommandHandler : IRequestHandler<DeleteFaqEntryCommand, Unit>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ITenantContext _tenantContext;
@@ -17,10 +17,10 @@ namespace SmartAiChat.Application.Handlers.FAQ
 
         public async Task<Unit> Handle(DeleteFaqEntryCommand request, CancellationToken cancellationToken)
         {
-            var tenantId = _tenantContext.GetTenantId();
-            var faqEntry = await _unitOfWork.FaqEntries.GetFirstOrDefaultAsync(
-                filter: f => f.Id == request.Id && f.TenantId == tenantId,
-                cancellationToken: cancellationToken);
+            var tenantId = _tenantContext.TenantId;
+            var faqEntry = await _unitOfWork.FaqEntries.FirstOrDefaultAsync(
+                f => f.Id == request.Id && f.TenantId == tenantId,
+                cancellationToken);
 
             if (faqEntry == null)
             {

@@ -4,7 +4,7 @@ using SmartAiChat.Shared.Models;
 
 namespace SmartAiChat.Application.Queries.FAQ
 {
-    public class GetAllFaqEntriesQuery : IRequest<PaginatedResult<FaqEntryDto>>
+    public class GetAllFaqEntriesQuery : IRequest<PaginatedResponse<FaqEntryDto>>
     {
         public PaginationRequest Pagination { get; set; }
     }

@@ -33,7 +33,6 @@ public class AutoMapperProfile : Profile
         
         CreateMap<ChatMessage, ChatMessageDto>();
         CreateMap<AiConfiguration, AiConfigurationDto>();
-        CreateMap<UpdateAiConfigurationCommand, AiConfiguration>();
         CreateMap<TenantPlan, TenantPlanDto>();
         CreateMap<TenantSubscription, TenantSubscriptionDto>();
         CreateMap<FaqEntry, FaqEntryDto>()

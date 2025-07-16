@@ -7,7 +7,7 @@ using SmartAiChat.Domain.Interfaces;
 
 namespace SmartAiChat.Application.Handlers.Tenants;
 
-public class UpdateTenantCommandHandler : IRequestHandler<UpdateTenantCommand, TenantDto>
+public class UpdateTenantCommandHandler : IRequestHandler<UpdateTenantCommand, TenantDto?>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
@@ -18,7 +18,7 @@ public class UpdateTenantCommandHandler : IRequestHandler<UpdateTenantCommand, T
         _mapper = mapper;
     }
 
-    public async Task<TenantDto> Handle(UpdateTenantCommand request, CancellationToken cancellationToken)
+    public async Task<TenantDto?> Handle(UpdateTenantCommand request, CancellationToken cancellationToken)
     {
         var tenant = await _unitOfWork.Tenants.GetByIdAsync(request.Id, cancellationToken);
         if (tenant == null)

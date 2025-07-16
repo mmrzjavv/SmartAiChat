@@ -6,7 +6,7 @@ using SmartAiChat.Domain.Interfaces;
 
 namespace SmartAiChat.Application.Handlers.TrainingFile
 {
-    public class GetTrainingFileByIdQueryHandler : IRequestHandler<GetTrainingFileByIdQuery, AiTrainingFileDto>
+    public class GetTrainingFileByIdQueryHandler : IRequestHandler<GetTrainingFileByIdQuery, AiTrainingFileDto?>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -19,12 +19,12 @@ namespace SmartAiChat.Application.Handlers.TrainingFile
             _tenantContext = tenantContext;
         }
 
-        public async Task<AiTrainingFileDto> Handle(GetTrainingFileByIdQuery request, CancellationToken cancellationToken)
+        public async Task<AiTrainingFileDto?> Handle(GetTrainingFileByIdQuery request, CancellationToken cancellationToken)
         {
-            var tenantId = _tenantContext.GetTenantId();
-            var trainingFile = await _unitOfWork.AiTrainingFiles.GetFirstOrDefaultAsync(
-                filter: f => f.Id == request.Id && f.TenantId == tenantId,
-                cancellationToken: cancellationToken);
+            var tenantId = _tenantContext.TenantId;
+            var trainingFile = await _unitOfWork.AiTrainingFiles.FirstOrDefaultAsync(
+                f => f.Id == request.Id && f.TenantId == tenantId,
+                cancellationToken);
 
             if (trainingFile == null)
             {

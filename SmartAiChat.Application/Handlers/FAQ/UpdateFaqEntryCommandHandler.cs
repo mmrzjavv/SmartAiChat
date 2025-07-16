@@ -23,10 +23,10 @@ namespace SmartAiChat.Application.Handlers.FAQ
 
         public async Task<FaqEntryDto> Handle(UpdateFaqEntryCommand request, CancellationToken cancellationToken)
         {
-            var tenantId = _tenantContext.GetTenantId();
-            var faqEntry = await _unitOfWork.FaqEntries.GetFirstOrDefaultAsync(
-                filter: f => f.Id == request.Id && f.TenantId == tenantId,
-                cancellationToken: cancellationToken);
+            var tenantId = _tenantContext.TenantId;
+            var faqEntry = await _unitOfWork.FaqEntries.FirstOrDefaultAsync(
+                f => f.Id == request.Id && f.TenantId == tenantId,
+                cancellationToken);
 
             if (faqEntry == null)
             {
@@ -39,7 +39,7 @@ namespace SmartAiChat.Application.Handlers.FAQ
                 faqEntry.Tags = JsonSerializer.Serialize(request.Tags);
             }
 
-            _unitOfWork.FaqEntries.Update(faqEntry);
+            await _unitOfWork.FaqEntries.UpdateAsync(faqEntry, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return _mapper.Map<FaqEntryDto>(faqEntry);

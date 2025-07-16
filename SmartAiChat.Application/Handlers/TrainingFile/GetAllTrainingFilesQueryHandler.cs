@@ -7,7 +7,7 @@ using SmartAiChat.Shared.Models;
 
 namespace SmartAiChat.Application.Handlers.TrainingFile
 {
-    public class GetAllTrainingFilesQueryHandler : IRequestHandler<GetAllTrainingFilesQuery, PaginatedResult<AiTrainingFileDto>>
+    public class GetAllTrainingFilesQueryHandler : IRequestHandler<GetAllTrainingFilesQuery, PaginatedResponse<AiTrainingFileDto>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -20,22 +20,16 @@ namespace SmartAiChat.Application.Handlers.TrainingFile
             _tenantContext = tenantContext;
         }
 
-        public async Task<PaginatedResult<AiTrainingFileDto>> Handle(GetAllTrainingFilesQuery request, CancellationToken cancellationToken)
+        public async Task<PaginatedResponse<AiTrainingFileDto>> Handle(GetAllTrainingFilesQuery request, CancellationToken cancellationToken)
         {
-            var tenantId = _tenantContext.GetTenantId();
-            var (trainingFiles, totalCount) = await _unitOfWork.AiTrainingFiles.GetAsync(
-                filter: f => f.TenantId == tenantId,
-                page: request.Pagination.Page,
-                pageSize: request.Pagination.PageSize,
-                cancellationToken: cancellationToken);
-
-            var trainingFileDtos = _mapper.Map<IEnumerable<AiTrainingFileDto>>(trainingFiles);
-
-            return new PaginatedResult<AiTrainingFileDto>(
-                trainingFileDtos,
-                totalCount,
-                request.Pagination.Page,
-                request.Pagination.PageSize);
+            var tenantId = _tenantContext.TenantId;
+            var pagedResult = await _unitOfWork.AiTrainingFiles.GetPagedAsync(request.Pagination, cancellationToken);
+            var trainingFileDtos = _mapper.Map<IEnumerable<AiTrainingFileDto>>(pagedResult.Items);
+            return PaginatedResponse<AiTrainingFileDto>.Create(
+                trainingFileDtos.ToList(),
+                pagedResult.TotalCount,
+                pagedResult.Page,
+                pagedResult.PageSize);
         }
     }
 }

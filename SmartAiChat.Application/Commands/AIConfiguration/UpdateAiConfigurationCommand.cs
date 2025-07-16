@@ -8,14 +8,14 @@ namespace SmartAiChat.Application.Commands.AIConfiguration
     {
         public bool IsEnabled { get; set; }
         public AiProvider Provider { get; set; }
-        public string ModelName { get; set; }
+        public string ModelName { get; set; } = string.Empty;
         public string? ApiKey { get; set; }
         public string? ApiEndpoint { get; set; }
         public int MaxWordLimit { get; set; }
         public int MaxDailyMessages { get; set; }
         public decimal Temperature { get; set; }
         public int MaxTokens { get; set; }
-        public string SystemPrompt { get; set; }
+        public string SystemPrompt { get; set; } = string.Empty;
         public string? WelcomeMessage { get; set; }
         public string? FallbackMessage { get; set; }
         public bool UseKnowledgeBase { get; set; }

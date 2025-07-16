@@ -23,7 +23,7 @@ namespace SmartAiChat.Application.Handlers.FAQ
 
         public async Task<FaqEntryDto> Handle(CreateFaqEntryCommand request, CancellationToken cancellationToken)
         {
-            var tenantId = _tenantContext.GetTenantId();
+            var tenantId = _tenantContext.TenantId;
             var faqEntry = _mapper.Map<FaqEntry>(request);
             faqEntry.TenantId = tenantId;
             if (request.Tags != null)

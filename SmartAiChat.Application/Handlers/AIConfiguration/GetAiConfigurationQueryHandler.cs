@@ -21,10 +21,10 @@ namespace SmartAiChat.Application.Handlers.AIConfiguration
 
         public async Task<AiConfigurationDto> Handle(GetAIConfigurationQuery request, CancellationToken cancellationToken)
         {
-            var tenantId = _tenantContext.GetTenantId();
-            var aiConfiguration = await _unitOfWork.AiConfigurations.GetFirstOrDefaultAsync(
-                filter: c => c.TenantId == tenantId,
-                cancellationToken: cancellationToken);
+            var tenantId = _tenantContext.TenantId;
+            var aiConfiguration = await _unitOfWork.AiConfigurations.FirstOrDefaultAsync(
+                c => c.TenantId == tenantId,
+                cancellationToken);
 
             if (aiConfiguration == null)
             {

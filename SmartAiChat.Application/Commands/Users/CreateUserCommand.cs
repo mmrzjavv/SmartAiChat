@@ -11,4 +11,5 @@ public class CreateUserCommand : IRequest<UserDto>
     public string Email { get; set; }
     public string Password { get; set; }
     public UserRole Role { get; set; }
+    public Guid TenantId { get; set; }
 }
